@@ -137,7 +137,6 @@ module.exports = function (grunt) {
         '<%= yeoman.out %>/spec/lib_spec.js',
         '<%= yeoman.out %>/spec/lib/**/*.js',
         '<%= yeoman.out %>/spec/math/**/*.js',
-        '<%= yeoman.out %>/spec/widgets/**/*.js'
       ]
     },
     connect: {
@@ -179,14 +178,6 @@ module.exports = function (grunt) {
       }
     },
 
-    cssmin: {
-      combine: {
-        files: {
-          '<%= yeoman.dist %>/<%= pkg.name %>.min.css': '<%= yeoman.dist %>/<%= pkg.name %>.css'
-        }
-      }
-    }
-
   });
 
 
@@ -198,13 +189,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-cssmin');
-
-  // grunt.loadNpmTasks('grunt-contrib-qunit');
-  // grunt.loadNpmTasks('grunt-contrib-jshint');
-  // grunt.loadNpmTasks('grunt-contrib-watch');
-
-
 
   grunt.registerTask('watch-serve', [
     'connect:serve', 'watch'
