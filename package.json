@@ -1,8 +1,8 @@
 {
-  "name": "ttm-coffeescript-utilities",
+  "name": "ttm-coffeescript-math",
   "version": "0.0.1",
-  "description": "TTM CoffeeScript Utilties",
-  "homepage": "https://github.com/thinkthroughmath/ttm-coffeescript-utilties",
+  "description": "TTM CoffeeScript Math",
+  "homepage": "https://github.com/thinkthroughmath/ttm-coffeescript-math",
   "dependencies": {
     "underscore": "~1.5.2",
     "jquery": "~1.8.3"
@@ -45,6 +45,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/thinkthroughmath/ttm-coffeescript-utilties.git"
+    "url": "https://github.com/thinkthroughmath/ttm-coffeescript-math.git"
   }
 }
