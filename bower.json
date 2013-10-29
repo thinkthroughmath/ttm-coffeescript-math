@@ -1,5 +1,5 @@
 {
-  "name": "ttm-coffeescript-utilities",
+  "name": "ttm-coffeescript-math",
   "version": "0.0.1",
   "dependencies": {
     "underscore": "~1.5.2"
