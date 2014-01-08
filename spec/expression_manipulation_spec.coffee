@@ -473,7 +473,6 @@ describe "expression manipulations", ->
       exp = @exp_pos_builder(1)
       new_exp = @manip.build_append_pi(value: "1").perform(exp).expression()
       expect(new_exp.last()).toBeInstanceOf @components.classes.pi
-      debugger
       expect(new_exp.last().value()).toEqual "1"
 
 
