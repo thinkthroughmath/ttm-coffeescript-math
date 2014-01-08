@@ -117,6 +117,38 @@ module.exports = function (grunt) {
       }
     },
 
+    connect: {
+      options: {
+        port: 9000,
+        // change this to '0.0.0.0' to access the server from outside
+        hostname: '0.0.0.0'
+      },
+      serve: {
+        options: {
+          open: true,
+          base: [
+            'html',
+            '.tmp',
+            'dist',
+            'bower_components',
+            'vendor/jasmine-standalone-1.3.1',
+            '<%= yeoman.src %>',
+            '<%= yeoman.site_src %>',
+          ]
+        }
+      },
+      dist: {
+        options: {
+          open: true,
+          base: [
+            '<%= yeoman.dist %>',
+            'bower_components',
+            '<%= yeoman.site_src %>',
+          ]
+        }
+      }
+    },
+
     uglify: {
       dist: {
         files: {
