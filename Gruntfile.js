@@ -99,7 +99,7 @@ module.exports = function (grunt) {
         '<%= yeoman.bower %>/ttm-coffeescript-utilities/dist/ttm-coffeescript-utilities.js',
         '<%= yeoman.dist %>/<%= pkg.name %>.js',
         '<%= yeoman.out %>/spec/spec_helpers.js',
-        // '<%= yeoman.out %>/spec/**/*.js',
+        '<%= yeoman.out %>/spec/**/*.js',
         '<%= yeoman.out %>/spec/build_expression_from_javascript_object_spec.js',
       ]
     },
