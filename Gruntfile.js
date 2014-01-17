@@ -29,7 +29,8 @@ module.exports = function (grunt) {
       test: 'spec',
       out: '.tmp',
       dist: 'dist',
-      site: 'site'
+      site: 'site',
+      docs: 'docs'
     },
     coffee: {
       lib: {
@@ -87,6 +88,7 @@ module.exports = function (grunt) {
         files: [{
           dot: true,
           src: [
+            '<%= yeoman.docs %>',
             '<%= yeoman.out %>',
             '<%= yeoman.dist %>'
           ]
@@ -149,6 +151,17 @@ module.exports = function (grunt) {
       }
     },
 
+
+    docco: {
+      docs: {
+        src: ['src/**/*.coffee',
+              'spec/**/*.coffee'],
+        options: {
+          output: 'docs/'
+        }
+      }
+    },
+
     uglify: {
       dist: {
         files: {
@@ -156,8 +169,6 @@ module.exports = function (grunt) {
         }
       }
     },
-
-
 
     concat: {
       options: {
@@ -175,28 +186,26 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('watch-serve', [
-    'connect:serve', 'watch'
+    'build',
+    'connect:serve',
+    'watch'
   ]);
-
 
   grunt.registerTask('build', [
     'clean',
+    'docco',
     'coffee',
     'copy:out',
     'copy:spec',
     'concat',
     'browserify',
     'uglify',
-
   ]);
-
-
 
   grunt.registerTask('test', [
     'build',
     'jasmine'
   ]);
-
 
   grunt.registerTask('serve', ['build', 'connect:serve:keepalive']);
 

@@ -33,7 +33,9 @@
     "browserify": "~2.35.0",
     "grunt-browserify": "~1.2.9",
     "grunt-contrib-jst": "~0.5.1",
-    "grunt-sass": "~0.7.0"
+    "grunt-sass": "~0.7.0",
+    "grunt-docco": "~0.3.2",
+    "docco": "~0.6.2"
   },
   "engines": {
     "node": ">=0.8.0"
