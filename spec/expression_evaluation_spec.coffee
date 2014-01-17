@@ -43,18 +43,7 @@ describe "math expression evaluation", ->
 
   it "evaluates fractional division", ->
     @expect_evaluation(
-      {fraction: ['20', '2.5']}
+      {fraction: ['20', '2.5']},
       '8'
     )
-
-  it "evaluates this expression correctly", ->
-    @expect_evaluation(
-      [
-        [
-          "41", '/', "32.75", '-', '1'
-        ], '*', '100'
-      ],
-      '25.19'
-    )
-
 

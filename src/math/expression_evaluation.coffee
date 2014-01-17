@@ -39,11 +39,11 @@ class EvaluationRefinementBuilder
         eval: (evaluation, pass)->
           return if pass != "addition"
 
-          prev = evaluation.previousValue()
-          next = evaluation.nextValue()
+          prev = evaluation.previous()
+          next = evaluation.next()
           if prev && next
             evaluation.handledSurrounding()
-            comps.classes.number.build(value: precise.add(prev, next))
+            comps.classes.number.build(value: precise.add(prev.value(), next.value()))
           else
             throw new MalformedExpressionError("Invalid Expression")
       });
@@ -53,11 +53,11 @@ class EvaluationRefinementBuilder
         eval: (evaluation, pass)->
           return if pass != "addition"
 
-          prev = evaluation.previousValue()
-          next = evaluation.nextValue()
+          prev = evaluation.previous()
+          next = evaluation.next()
           if prev && next
             evaluation.handledSurrounding()
-            comps.classes.number.build(value: precise.sub(prev, next))
+            comps.classes.number.build(value: precise.sub(prev.value(), next.value()))
           else
             throw new MalformedExpressionError("Invalid Expression")
       });
@@ -67,11 +67,12 @@ class EvaluationRefinementBuilder
       {
         eval: (evaluation, pass)->
           return if pass != "multiplication"
-          prev = evaluation.previousValue()
-          next = evaluation.nextValue()
+          prev = evaluation.previous()
+          next = evaluation.next()
           if prev && next
             evaluation.handledSurrounding()
-            comps.classes.number.build(value: precise.mul(prev, next))
+            next = refinement.refine(next).eval(evaluation, pass).toCalculable()
+            comps.classes.number.build(value: precise.mul(prev.value(), next))
           else
             throw new MalformedExpressionError("Invalid Expression")
       });
@@ -82,11 +83,11 @@ class EvaluationRefinementBuilder
       {
         eval: (evaluation, pass)->
           return if pass != "multiplication"
-          prev = evaluation.previousValue()
-          next = evaluation.nextValue()
+          prev = evaluation.previous()
+          next = evaluation.next()
           if prev && next
             evaluation.handledSurrounding()
-            comps.classes.number.build(value: precise.div(prev, next))
+            comps.classes.number.build(value: precise.div(prev.value(), next.value()))
           else
             throw new MalformedExpressionError("Invalid Expression")
 
@@ -96,8 +97,8 @@ class EvaluationRefinementBuilder
       {
         eval: (evaluation, pass)->
           return if pass != "multiplication"
-          num = refinement.refine(@numerator()).eval().toCalculable()
-          denom = refinement.refine(@denominator()).eval().toCalculable()
+          num = refinement.refine(@numerator()).eval(evaluation, pass).toCalculable()
+          denom = refinement.refine(@denominator()).eval(evaluation, pass).toCalculable()
           if num && denom
             comps.build_number(value: precise.div(num, denom))
           else
@@ -125,15 +126,11 @@ class EvaluationRefinementBuilder
 
         @expression
 
-      previousValue: ->
-        prev = @expression[@expression_index - 1]
-        if prev
-          prev.value()
+      previous: ->
+        @expression[@expression_index - 1]
 
-      nextValue: ->
-        next = @expression[@expression_index + 1]
-        if next
-          next.value()
+      next: ->
+        @expression[@expression_index + 1]
 
       handledPrevious: ->
         @expression.splice(@expression_index - 1, 1)
