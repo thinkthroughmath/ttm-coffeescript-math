@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>build_expression_from_javascript_object_spec.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="build_expression_from_javascript_object_spec.html">
+                build_expression_from_javascript_object_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components_spec.html">
+                expression_components_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality_spec.html">
+                expression_equality_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation_spec.html">
+                expression_evaluation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation_spec.html">
+                expression_manipulation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position_spec.html">
+                expression_position_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string_spec.html">
+                expression_to_string_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal_spec.html">
+                expression_traversal_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="feature_spec.html">
+                feature_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="precise_spec.html">
+                precise_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="spec_helpers.html">
+                spec_helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="browser.html">
+                browser.coffee
+              </a>
+            
+              
+              <a class="source" href="math.html">
+                math.coffee
+              </a>
+            
+              
+              <a class="source" href="build_expression_from_javascript_object.html">
+                build_expression_from_javascript_object.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components.html">
+                expression_components.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality.html">
+                expression_equality.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation.html">
+                expression_evaluation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation.html">
+                expression_manipulation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position.html">
+                expression_position.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string.html">
+                expression_to_string.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal.html">
+                expression_traversal.coffee
+              </a>
+            
+              
+              <a class="source" href="precise.html">
+                precise.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>build_expression_from_javascript_object_spec.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+
+ttm = thinkthroughmath
+
+describe <span class="hljs-string">"BuildExpressionFromJavascriptObject"</span>,<span class="hljs-function"> -&gt;</span>
+  beforeEach<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@math</span> = ttm.lib.math.math_lib.build()
+    <span class="hljs-property">@components</span> = <span class="hljs-property">@math</span>.components
+
+    builder_lib = ttm.lib.math.BuildExpressionFromJavascriptObject
+
+    <span class="hljs-property">@exp_pos_builder</span> = <span class="hljs-property">@math</span>.object_to_expression.buildExpressionPositionFunction()
+    <span class="hljs-property">@builder</span> = <span class="hljs-property">@math</span>.object_to_expression.buildExpressionFunction()
+
+  it <span class="hljs-string">"builds an empty expression"</span>,<span class="hljs-function"> -&gt;</span>
+    expect(<span class="hljs-property">@builder</span>() <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@components</span>.classes.expression).toBeTruthy()
+
+  it <span class="hljs-string">"handles numbers"</span>,<span class="hljs-function"> -&gt;</span>
+    expression = <span class="hljs-property">@builder</span>(<span class="hljs-number">10</span>)
+    expect(expression.first().value()).toEqual <span class="hljs-string">"10"</span>
+
+  it <span class="hljs-string">"handles numbers that have trailing decimals"</span>,<span class="hljs-function"> -&gt;</span>
+    expression = <span class="hljs-property">@builder</span>(<span class="hljs-string">"0."</span>)
+    x = expression.first()
+    expect(x.value()).toEqual <span class="hljs-string">"0"</span>
+
+    expect(x.future_as_decimal).toEqual <span class="hljs-literal">true</span>
+
+  it <span class="hljs-string">"handles addition"</span>,<span class="hljs-function"> -&gt;</span>
+    expression = <span class="hljs-property">@builder</span>(<span class="hljs-number">10</span>, <span class="hljs-string">'+'</span>, <span class="hljs-number">11</span>)
+    expect(expression.nth(<span class="hljs-number">0</span>)).toBeInstanceOf <span class="hljs-property">@components</span>.classes.number
+    expect(expression.nth(<span class="hljs-number">1</span>)).toBeInstanceOf <span class="hljs-property">@components</span>.classes.addition
+    expect(expression.last().value()).toEqual <span class="hljs-string">"11"</span>
+
+  it <span class="hljs-string">"handles division"</span>,<span class="hljs-function"> -&gt;</span>
+    expression = <span class="hljs-property">@builder</span>(<span class="hljs-number">10</span>, <span class="hljs-string">'/'</span>, <span class="hljs-number">11</span>)
+    expect(expression.nth(<span class="hljs-number">0</span>)).toBeInstanceOf <span class="hljs-property">@components</span>.classes.number
+    expect(expression.nth(<span class="hljs-number">1</span>)).toBeInstanceOf <span class="hljs-property">@components</span>.classes.division
+    expect(expression.last().value()).toEqual <span class="hljs-string">"11"</span>
+
+  it <span class="hljs-string">"handles multiplication"</span>,<span class="hljs-function"> -&gt;</span>
+    expression = <span class="hljs-property">@builder</span>(<span class="hljs-number">10</span>, <span class="hljs-string">'*'</span>, <span class="hljs-number">11</span>)
+    expect(expression.nth(<span class="hljs-number">0</span>)).toBeInstanceOf <span class="hljs-property">@components</span>.classes.number
+    expect(expression.nth(<span class="hljs-number">1</span>)).toBeInstanceOf <span class="hljs-property">@components</span>.classes.multiplication
+    expect(expression.last().value()).toEqual <span class="hljs-string">"11"</span>
+
+  it <span class="hljs-string">"handles roots"</span>,<span class="hljs-function"> -&gt;</span>
+    expression = <span class="hljs-property">@builder</span>(<span class="hljs-attribute">root</span>: [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>])
+    expect(expression.first()).toBeInstanceOf <span class="hljs-property">@components</span>.classes.root
+
+  it <span class="hljs-string">"handles pi"</span>,<span class="hljs-function"> -&gt;</span>
+    expression = <span class="hljs-property">@builder</span>(<span class="hljs-number">10</span>, <span class="hljs-string">'pi'</span>, <span class="hljs-number">11</span>)
+    expect(expression.nth(<span class="hljs-number">0</span>)).toBeInstanceOf <span class="hljs-property">@components</span>.classes.number
+    expect(expression.nth(<span class="hljs-number">1</span>)).toBeInstanceOf <span class="hljs-property">@components</span>.classes.pi
+    expect(expression.last().value()).toEqual <span class="hljs-string">"11"</span>
+
+  it <span class="hljs-string">"handles variables"</span>,<span class="hljs-function"> -&gt;</span>
+    expression = <span class="hljs-property">@builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">"doot"</span>})
+    expect(expression.nth(<span class="hljs-number">0</span>)).toBeInstanceOf <span class="hljs-property">@components</span>.classes.variable
+    expect(expression.nth(<span class="hljs-number">0</span>).name()).toEqual <span class="hljs-string">"doot"</span>
+
+  describe <span class="hljs-string">'exponentiation'</span>,<span class="hljs-function"> -&gt;</span>
+    it <span class="hljs-string">'creates exponentiation objects from caret object notation'</span>,<span class="hljs-function"> -&gt;</span>
+      expression = <span class="hljs-property">@builder</span> <span class="hljs-string">'^'</span>: [<span class="hljs-number">10</span>, <span class="hljs-number">11</span>]
+      exponentiation = expression.nth(<span class="hljs-number">0</span>)
+      expect(exponentiation).toBeInstanceOf <span class="hljs-property">@components</span>.classes.exponentiation
+
+      base = exponentiation.base()
+      expect(base).toBeInstanceOf <span class="hljs-property">@components</span>.classes.expression
+      expect(base.first().value()).toEqual <span class="hljs-string">"10"</span>
+
+      power = exponentiation.power()
+      expect(power).toBeInstanceOf <span class="hljs-property">@components</span>.classes.expression
+      expect(power.first().value()).toEqual <span class="hljs-string">"11"</span>
+
+    it <span class="hljs-string">'supports incomplete exponentiations (as an empty expression)'</span>,<span class="hljs-function"> -&gt;</span>
+      expression = <span class="hljs-property">@builder</span> <span class="hljs-string">'^'</span>: [<span class="hljs-number">10</span>, <span class="hljs-literal">null</span>]
+      exponentiation = expression.nth(<span class="hljs-number">0</span>)
+      expect(exponentiation).toBeInstanceOf <span class="hljs-property">@components</span>.classes.exponentiation
+      expect(exponentiation.power()).toBeInstanceOf <span class="hljs-property">@components</span>.classes.expression
+
+  it <span class="hljs-string">"handles parenthetical sub-expressions via arrays"</span>,<span class="hljs-function"> -&gt;</span>
+    expression = <span class="hljs-property">@builder</span> []
+    sub_exp = expression.first()
+    expect(expression).toBeInstanceOf <span class="hljs-property">@components</span>.classes.expression
+    expect(sub_exp).toBeInstanceOf <span class="hljs-property">@components</span>.classes.expression
+
+
+  describe <span class="hljs-string">"handles fraction"</span>,<span class="hljs-function"> -&gt;</span>
+    it <span class="hljs-string">"handles base case"</span>,<span class="hljs-function"> -&gt;</span>
+      expression = <span class="hljs-property">@builder</span>({<span class="hljs-attribute">fraction</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>]})
+      sub_exp = expression.first()
+      expect(expression).toBeInstanceOf <span class="hljs-property">@components</span>.classes.expression
+      expect(sub_exp).toBeInstanceOf <span class="hljs-property">@components</span>.classes.fraction
+
+  describe <span class="hljs-string">"handling function syntax"</span>,<span class="hljs-function"> -&gt;</span>
+    it <span class="hljs-string">"converts to a Fn object"</span>,<span class="hljs-function"> -&gt;</span>
+      expression = <span class="hljs-property">@builder</span>(<span class="hljs-attribute">fn</span>: [<span class="hljs-string">"doot"</span>, <span class="hljs-number">2</span>])
+      sub_exp = expression.first()
+      expect(sub_exp).toBeInstanceOf <span class="hljs-property">@components</span>.classes.fn
+
+  describe <span class="hljs-string">"building expression position"</span>,<span class="hljs-function"> -&gt;</span>
+    describe <span class="hljs-string">"with nothing marked"</span>,<span class="hljs-function"> -&gt;</span>
+      it <span class="hljs-string">"sets the last item in the expression list as the current expression"</span>,<span class="hljs-function"> -&gt;</span>
+        results = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+        expect(results.expression()).toBeAnEqualExpressionTo <span class="hljs-property">@builder</span>(<span class="hljs-number">10</span>)
+        expect(results.position()).toEqual results.expression().id()
+
+    describe <span class="hljs-string">"with an element marked"</span>,<span class="hljs-function"> -&gt;</span>
+      describe <span class="hljs-string">"setting the marked item in the expression list as the current expression works for"</span>,<span class="hljs-function"> -&gt;</span>
+        it <span class="hljs-string">"fractions"</span>,<span class="hljs-function"> -&gt;</span>
+          results = <span class="hljs-property">@exp_pos_builder</span>({<span class="hljs-attribute">fraction</span>:[<span class="hljs-literal">null</span>, cursor([])]})
+          expect(results.expression()).toBeAnEqualExpressionTo <span class="hljs-property">@builder</span>(<span class="hljs-attribute">fraction</span>: [])
+          expect(results.position()).toEqual results.expression().last().denominator().id()
+
+        it <span class="hljs-string">"exponents"</span>,<span class="hljs-function"> -&gt;</span>
+          results = <span class="hljs-property">@exp_pos_builder</span>({<span class="hljs-string">'^'</span>:[<span class="hljs-literal">null</span>, cursor([])]})
+          expect(results.expression()).toBeAnEqualExpressionTo <span class="hljs-property">@builder</span>(<span class="hljs-string">'^'</span>: [])
+          expect(results.position()).toEqual results.expression().last().power().id()
+
+        it <span class="hljs-string">"subexpressions"</span>,<span class="hljs-function"> -&gt;</span>
+          results = <span class="hljs-property">@exp_pos_builder</span>([cursor([])])
+          expect(results.expression()).toBeAnEqualExpressionTo <span class="hljs-property">@builder</span>([[]])
+          expect(results.position()).toEqual results.expression().first().first().id()</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

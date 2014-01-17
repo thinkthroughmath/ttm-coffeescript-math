@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>expression_manipulation_spec.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="build_expression_from_javascript_object_spec.html">
+                build_expression_from_javascript_object_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components_spec.html">
+                expression_components_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality_spec.html">
+                expression_equality_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation_spec.html">
+                expression_evaluation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation_spec.html">
+                expression_manipulation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position_spec.html">
+                expression_position_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string_spec.html">
+                expression_to_string_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal_spec.html">
+                expression_traversal_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="feature_spec.html">
+                feature_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="precise_spec.html">
+                precise_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="spec_helpers.html">
+                spec_helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="browser.html">
+                browser.coffee
+              </a>
+            
+              
+              <a class="source" href="math.html">
+                math.coffee
+              </a>
+            
+              
+              <a class="source" href="build_expression_from_javascript_object.html">
+                build_expression_from_javascript_object.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components.html">
+                expression_components.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality.html">
+                expression_equality.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation.html">
+                expression_evaluation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation.html">
+                expression_manipulation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position.html">
+                expression_position.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string.html">
+                expression_to_string.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal.html">
+                expression_traversal.coffee
+              </a>
+            
+              
+              <a class="source" href="precise.html">
+                precise.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>expression_manipulation_spec.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ttm = thinkthroughmath
+class_mixer = ttm.class_mixer
+
+<span class="hljs-function"><span class="hljs-title">it_plays_manipulation_role</span> = <span class="hljs-params">(options)</span>-&gt;</span>
+  describe <span class="hljs-string">"acting as an expression manipulation"</span>,<span class="hljs-function"> -&gt;</span>
+    beforeEach<span class="hljs-function"> -&gt;</span>
+      <span class="hljs-property">@subject</span> = options.subject.call(@)
+
+    it <span class="hljs-string">"has a perform method"</span>,<span class="hljs-function"> -&gt;</span>
+      expect(<span class="hljs-keyword">typeof</span> <span class="hljs-property">@subject</span>.perform).toEqual <span class="hljs-string">"function"</span>
+
+    it <span class="hljs-string">"returns an ExpressionPosition object"</span>,<span class="hljs-function"> -&gt;</span>
+      orig = options.expression_for_performance.call(@)
+      results = <span class="hljs-property">@subject</span>.perform(orig)
+      <span class="hljs-keyword">unless</span> results <span class="hljs-keyword">instanceof</span> ttm.lib.math.ExpressionPosition
+        <span class="hljs-keyword">throw</span> <span class="hljs-string">"The return value was not an instance of expression position"</span>
+
+<span class="hljs-function"><span class="hljs-title">it_inserts_components_where_pointed_to</span> = <span class="hljs-params">(specifics)</span>-&gt;</span>
+  describe <span class="hljs-string">"<span class="hljs-subst">#{specifics.name}</span> inserts correctly when position is"</span>,<span class="hljs-function"> -&gt;</span>
+    it <span class="hljs-string">"works with a base case"</span>,<span class="hljs-function"> -&gt;</span>
+      start =
+        <span class="hljs-keyword">if</span> specifics.basic_start_expression
+          specifics.basic_start_expression.call(@)
+        <span class="hljs-keyword">else</span>
+          <span class="hljs-property">@exp_pos_builder</span>()
+      subject = specifics.subject.call(@)
+      new_exp = subject.perform(start)
+      expect(new_exp.expression()).toBeAnEqualExpressionTo(
+       specifics.basic_should_equal_after.call(@)
+      )
+
+
+describe <span class="hljs-string">"expression manipulations"</span>,<span class="hljs-function"> -&gt;</span>
+  beforeEach<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@math</span> = ttm.lib.math.math_lib.build()
+    <span class="hljs-property">@pos</span> = <span class="hljs-property">@math</span>.expression_position
+    <span class="hljs-property">@manip</span> = <span class="hljs-property">@math</span>.commands
+    <span class="hljs-property">@components</span> = <span class="hljs-property">@math</span>.components
+
+    builder_lib = ttm.lib.math.BuildExpressionFromJavascriptObject
+    <span class="hljs-property">@exp_builder</span> = <span class="hljs-property">@math</span>.object_to_expression.buildExpressionFunction()
+    <span class="hljs-property">@exp_pos_builder</span> = <span class="hljs-property">@math</span>.object_to_expression.buildExpressionPositionFunction()
+    expression_to_string = ttm.lib.math.ExpressionToString.toString
+    <span class="hljs-property">@expect_value</span> = <span class="hljs-function"><span class="hljs-params">(expression, value)</span>-&gt;</span>
+      expect(expression_to_string(expression)).toEqual value
+
+  describe <span class="hljs-string">"a proof-of-concept example"</span>,<span class="hljs-function"> -&gt;</span>
+    it <span class="hljs-string">"produces the correct result TODO make this larger"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_builder</span>()
+      exp_pos = ttm.lib.math.ExpressionPosition.build(<span class="hljs-attribute">position</span>: exp.id(), <span class="hljs-attribute">expression</span>: exp)
+      exp_pos = <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">1</span>).perform(exp_pos)
+      exp_pos = <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">0</span>).perform(exp_pos)
+      exp_pos = <span class="hljs-property">@manip</span>.build_append_multiplication().perform(exp_pos)
+      exp_pos = <span class="hljs-property">@manip</span>.build_append_sub_expression().perform(exp_pos)
+      exp_pos = <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">2</span>).perform(exp_pos)
+      exp_pos = <span class="hljs-property">@manip</span>.build_append_addition().perform(exp_pos)
+      exp_pos = <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">4</span>).perform(exp_pos)
+      exp_pos = <span class="hljs-property">@manip</span>.build_exit_sub_expression().perform(exp_pos)
+
+      expected = <span class="hljs-property">@exp_builder</span>(<span class="hljs-number">10</span>, <span class="hljs-string">'*'</span>, [<span class="hljs-number">2</span>, <span class="hljs-string">'+'</span>, <span class="hljs-number">4</span>])
+      expect(exp_pos.expression()).toBeAnEqualExpressionTo expected
+
+  describe <span class="hljs-string">"appending multiplication"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_append_multiplication()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+    it_inserts_components_where_pointed_to(
+      <span class="hljs-attribute">name</span>: <span class="hljs-string">'multiplication'</span>
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@manip</span>.build_append_multiplication()
+      <span class="hljs-attribute">basic_start_expression</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_pos_builder</span> <span class="hljs-number">1</span>
+      <span class="hljs-attribute">basic_should_equal_after</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_builder</span> <span class="hljs-number">1</span>, <span class="hljs-string">'*'</span>
+    )
+
+    it <span class="hljs-string">"does nothing if the expression is empty"</span>,<span class="hljs-function"> -&gt;</span>
+      exp_pos = <span class="hljs-property">@exp_pos_builder</span>()
+      exp_pos = <span class="hljs-property">@manip</span>.build_append_multiplication().perform(exp_pos)
+      expected = <span class="hljs-property">@exp_builder</span>()
+      expect(exp_pos.expression()).toBeAnEqualExpressionTo expected
+
+    it <span class="hljs-string">"adds multiplication to the end of the expression"</span>,<span class="hljs-function"> -&gt;</span>
+      exp_pos = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">1</span>)
+      results = <span class="hljs-property">@manip</span>.build_append_multiplication().perform(exp_pos)
+      expect(results.expression().last() <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@components</span>.classes.multiplication).toEqual <span class="hljs-literal">true</span>
+
+    it <span class="hljs-string">"correctly adds multiplication after an exponentiation"</span>,<span class="hljs-function"> -&gt;</span>
+      exp_pos = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-string">'^'</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>])
+      new_exp = <span class="hljs-property">@manip</span>.build_append_multiplication().perform(exp_pos)
+      expected = <span class="hljs-property">@exp_builder</span>({<span class="hljs-string">'^'</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>]}, <span class="hljs-string">'*'</span>)
+      expect(new_exp.expression()).toBeAnEqualExpressionTo expected
+
+
+  describe <span class="hljs-string">"exponentiate last element"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_exponentiate_last()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>()
+
+    it_inserts_components_where_pointed_to(
+      <span class="hljs-attribute">name</span>: <span class="hljs-string">'exponentiation'</span>
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@manip</span>.build_exponentiate_last()
+      <span class="hljs-attribute">basic_start_expression</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_pos_builder</span> <span class="hljs-number">1</span>
+      <span class="hljs-attribute">basic_should_equal_after</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_builder</span> <span class="hljs-string">'^'</span>: [<span class="hljs-number">1</span>,[]]
+    )
+
+    describe <span class="hljs-string">"on a single number-only expression"</span>,<span class="hljs-function"> -&gt;</span>
+      beforeEach<span class="hljs-function"> -&gt;</span>
+        exp = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+        <span class="hljs-property">@new_exp</span> = <span class="hljs-property">@manip</span>.build_exponentiate_last().perform(exp).expression()
+
+      it <span class="hljs-string">"replaces the content of the expression with an exponentiation"</span>,<span class="hljs-function"> -&gt;</span>
+        expect(<span class="hljs-property">@new_exp</span>.first()).toBeInstanceOf <span class="hljs-property">@components</span>.classes.exponentiation
+
+      it <span class="hljs-string">"provides the exponentiation its base"</span>,<span class="hljs-function"> -&gt;</span>
+        expect(<span class="hljs-property">@new_exp</span>.first().base()).toBeAnEqualExpressionTo <span class="hljs-property">@exp_builder</span>([<span class="hljs-number">10</span>]).first()
+
+    describe <span class="hljs-string">"on an expression that currently ends with an operator "</span>,<span class="hljs-function"> -&gt;</span>
+      it <span class="hljs-string">"replaces the trailing operator"</span>,<span class="hljs-function"> -&gt;</span>
+        exp = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>, <span class="hljs-string">'+'</span>)
+        new_exp = <span class="hljs-property">@manip</span>.build_exponentiate_last().perform(exp).expression()
+        expected = <span class="hljs-property">@exp_builder</span>(<span class="hljs-string">'^'</span>: [<span class="hljs-number">10</span>, <span class="hljs-literal">null</span>])
+        expect(new_exp).toBeAnEqualExpressionTo expected
+
+    describe <span class="hljs-string">"on an expression that has a trailing exponent"</span>,<span class="hljs-function"> -&gt;</span>
+      it <span class="hljs-string">"manipulates expression correctly"</span>,<span class="hljs-function"> -&gt;</span>
+        exp = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-string">'^'</span>: [<span class="hljs-number">10</span>, []])
+        new_exp = <span class="hljs-property">@manip</span>.build_exponentiate_last().perform(exp).expression()
+        expected = <span class="hljs-property">@exp_builder</span>(<span class="hljs-string">'^'</span>: [<span class="hljs-number">10</span>, []])
+        expect(new_exp).toBeAnEqualExpressionTo expected
+
+  describe <span class="hljs-string">"appending a number"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">8</span>)
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+    it <span class="hljs-string">"inserts a number when the expression is empty"</span>,<span class="hljs-function"> -&gt;</span>
+      <span class="hljs-property">@exp_pos</span> = <span class="hljs-property">@exp_pos_builder</span>()
+      exp = <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">8</span>).perform(<span class="hljs-property">@exp_pos</span>)
+      expected = <span class="hljs-property">@exp_builder</span>(<span class="hljs-number">8</span>)
+      expect(exp.expression()).toBeAnEqualExpressionTo expected
+
+    describe <span class="hljs-string">"when the previous element is a closed expression"</span>,<span class="hljs-function"> -&gt;</span>
+      beforeEach<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos</span> = <span class="hljs-property">@exp_pos_builder</span>([<span class="hljs-number">1</span>])
+
+      it <span class="hljs-string">"adds a multiplication symbol between elements"</span>,<span class="hljs-function"> -&gt;</span>
+        exp = <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">11</span>).perform(<span class="hljs-property">@exp_pos</span>)
+        expected = <span class="hljs-property">@exp_builder</span>([<span class="hljs-number">1</span>], <span class="hljs-string">'*'</span>, <span class="hljs-number">11</span>)
+        expect(exp.expression()).toBeAnEqualExpressionTo expected
+
+  describe <span class="hljs-string">"appending exponentiation"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_append_exponentiation()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+    describe <span class="hljs-string">"when the currently displayed element is "</span>,<span class="hljs-function"> -&gt;</span>
+      beforeEach<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos</span> = <span class="hljs-property">@exp_pos_builder</span>([[]])
+
+      it <span class="hljs-string">"adds the number at the correct place"</span>,<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos</span> = <span class="hljs-property">@manip</span>.utils.build_expression_position_manipulator().
+          updatePositionTo<span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@exp_pos</span>, (comp)-&gt;
+            comp.isExpression() &amp;&amp;
+              comp.parent() &amp;&amp;
+              comp.parent().isExpression() &amp;&amp;
+              comp.parent().parent()
+          )</span>
+
+
+        <span class="hljs-title">exp</span> = @<span class="hljs-title">manip</span>.<span class="hljs-title">build_append_number</span><span class="hljs-params">(value: <span class="hljs-number">8</span>)</span>.
+          <span class="hljs-title">perform</span><span class="hljs-params">(<span class="hljs-property">@exp_pos</span>)</span>
+
+        <span class="hljs-title">expected</span> = @<span class="hljs-title">exp_builder</span><span class="hljs-params">([[<span class="hljs-number">8</span>]])</span>
+
+        <span class="hljs-title">expect</span><span class="hljs-params">(exp.expression())</span>.<span class="hljs-title">toBeAnEqualExpressionTo</span> <span class="hljs-title">expected</span>
+
+    <span class="hljs-title">describe</span> "<span class="hljs-title">when</span> <span class="hljs-title">the</span> <span class="hljs-title">pointed</span>-<span class="hljs-title">at</span> <span class="hljs-title">element</span> <span class="hljs-title">is</span> <span class="hljs-title">an</span> <span class="hljs-title">exponentiation</span> ", -&gt;</span>
+      describe <span class="hljs-string">"with no power"</span>,<span class="hljs-function"> -&gt;</span>
+        beforeEach<span class="hljs-function"> -&gt;</span>
+          <span class="hljs-property">@exp</span> = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-string">'^'</span>: [<span class="hljs-number">10</span>, cursor([])])
+
+        it <span class="hljs-string">"inserts the number into the exponentiation"</span>,<span class="hljs-function"> -&gt;</span>
+          new_exp = <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">11</span>).perform(<span class="hljs-property">@exp</span>)
+          expected = <span class="hljs-property">@exp_builder</span>(<span class="hljs-string">'^'</span>: [<span class="hljs-number">10</span>, <span class="hljs-number">11</span>])
+
+          expect(new_exp.expression()).toBeAnEqualExpressionTo expected
+
+      describe <span class="hljs-string">"with a power"</span>,<span class="hljs-function"> -&gt;</span>
+        beforeEach<span class="hljs-function"> -&gt;</span>
+          <span class="hljs-property">@exp_pos</span> = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-string">'^'</span>: [<span class="hljs-number">10</span>, <span class="hljs-number">11</span>])
+
+        it <span class="hljs-string">"inserts a multiplication and then the number"</span>,<span class="hljs-function"> -&gt;</span>
+          new_exp = <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">7</span>).perform(<span class="hljs-property">@exp_pos</span>)
+          expected = <span class="hljs-property">@exp_builder</span>({<span class="hljs-string">'^'</span>: [<span class="hljs-number">10</span>,<span class="hljs-number">11</span>]}, <span class="hljs-string">'*'</span>, <span class="hljs-number">7</span>)
+          expect(new_exp.expression()).toBeAnEqualExpressionTo expected
+
+    describe <span class="hljs-string">"when the pointed at element is not one of those special cases"</span>,<span class="hljs-function"> -&gt;</span>
+      it <span class="hljs-string">"adds the number as a new number"</span>,<span class="hljs-function"> -&gt;</span>
+        exp_pos = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'+'</span>, <span class="hljs-number">3</span>, <span class="hljs-string">'='</span>)
+        manipulated_exp = <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">8</span>).perform(exp_pos)
+        expected = <span class="hljs-property">@exp_builder</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'+'</span>, <span class="hljs-number">3</span>, <span class="hljs-string">'='</span>, <span class="hljs-number">8</span>)
+        expect(manipulated_exp.expression()).toBeAnEqualExpressionTo expected
+
+
+  describe <span class="hljs-string">"appending an equals"</span>,<span class="hljs-function"> -&gt;</span>
+    it <span class="hljs-string">"inserts an equals sign into the equation"</span>,<span class="hljs-function"> -&gt;</span>
+      <span class="hljs-property">@exp</span> = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'+'</span>, <span class="hljs-number">3</span>)
+      new_exp = <span class="hljs-property">@manip</span>.build_append_equals().perform(<span class="hljs-property">@exp</span>).expression()
+      expected = <span class="hljs-property">@exp_builder</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'+'</span>, <span class="hljs-number">3</span>, <span class="hljs-string">'='</span>)
+      expect(new_exp).toBeAnEqualExpressionTo expected
+
+  describe <span class="hljs-string">"appending a sub expression"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_append_sub_expression()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+    it_inserts_components_where_pointed_to(
+      <span class="hljs-attribute">name</span>: <span class="hljs-string">'appending a sub expression'</span>
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@manip</span>.build_append_sub_expression()
+      <span class="hljs-attribute">basic_start_expression</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_pos_builder</span>()
+      <span class="hljs-attribute">basic_should_equal_after</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_builder</span> []
+    )
+
+    it <span class="hljs-string">"adds a sub-expression to the expression"</span>,<span class="hljs-function"> -&gt;</span>
+      <span class="hljs-property">@exp</span> = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'+'</span>)
+      new_exp = <span class="hljs-property">@manip</span>.build_append_sub_expression().perform(<span class="hljs-property">@exp</span>).expression()
+      expected = <span class="hljs-property">@exp_builder</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'+'</span>, [])
+      expect(new_exp).toBeAnEqualExpressionTo expected
+
+    describe <span class="hljs-string">"when adding to a sub-expression"</span>,<span class="hljs-function"> -&gt;</span>
+      it <span class="hljs-string">"should add everything correctly"</span>,<span class="hljs-function"> -&gt;</span>
+        exp = <span class="hljs-property">@exp_pos_builder</span>()
+        exp = <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">6</span>).perform(exp)
+        exp = <span class="hljs-property">@manip</span>.build_append_addition().perform(exp)
+
+        exp = <span class="hljs-property">@manip</span>.build_append_sub_expression().perform(exp)
+        exp = <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">6</span>).perform(exp)
+        exp = <span class="hljs-property">@manip</span>.build_append_addition().perform(exp)
+
+        exp = <span class="hljs-property">@manip</span>.build_append_sub_expression().perform(exp)
+        exp = <span class="hljs-property">@manip</span>.build_exit_sub_expression().perform(exp)
+        exp = <span class="hljs-property">@manip</span>.build_exit_sub_expression().perform(exp)
+        expected = <span class="hljs-property">@exp_builder</span>(<span class="hljs-number">6</span>, <span class="hljs-string">'+'</span>, [<span class="hljs-number">6</span>, <span class="hljs-string">'+'</span>, []])
+
+        expect(exp.expression()).toBeAnEqualExpressionTo expected
+
+  describe <span class="hljs-string">"exiting a sub expression"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_exit_sub_expression()
+
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        ret = <span class="hljs-property">@exp_pos_builder</span>([cursor([])])</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>we need to set the pointed position to the id of the open expression</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        ret.clone(<span class="hljs-attribute">position</span>: ret.expression().first().id())
+
+    it <span class="hljs-string">"moves the position outside of the sub-expression"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>([cursor([])])
+      new_exp = <span class="hljs-property">@manip</span>.build_exit_sub_expression().perform(exp)
+      actual = new_exp.expression()
+      expected = <span class="hljs-property">@exp_builder</span>([[]])
+      expect(actual).toBeAnEqualExpressionTo expected
+      expect(new_exp.position()).<span class="hljs-keyword">not</span>.toEqual(exp.position())
+      expect(new_exp.position()).toEqual(exp.expression().last().id())
+
+    it <span class="hljs-string">"correctly handles closing a nested open subexpression that is pointed at"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>([cursor([])])
+      exp = exp.clone <span class="hljs-attribute">position</span>: exp.expression().first().first().id()
+      new_exp = <span class="hljs-property">@manip</span>.build_exit_sub_expression().perform(exp)
+      expected = <span class="hljs-property">@exp_builder</span>([[]])
+      expect(new_exp.expression()).toBeAnEqualExpressionTo expected
+
+
+  describe <span class="hljs-string">"appending division"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_append_division()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+    it <span class="hljs-string">"adds a division to the expression"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">1</span>)
+
+      new_exp = <span class="hljs-property">@manip</span>.build_append_division().perform(exp)
+      expect(new_exp.expression().last() <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@components</span>.classes.division).toBeTruthy()
+
+
+    it_inserts_components_where_pointed_to(
+      <span class="hljs-attribute">name</span>: <span class="hljs-string">'division'</span>
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@manip</span>.build_append_division()
+      <span class="hljs-attribute">basic_start_expression</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_pos_builder</span> <span class="hljs-number">1</span>
+      <span class="hljs-attribute">basic_should_equal_after</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_builder</span> <span class="hljs-number">1</span>, <span class="hljs-string">'/'</span>
+    )
+
+  describe <span class="hljs-string">"appending addition"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_append_addition()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+    it_inserts_components_where_pointed_to(
+      <span class="hljs-attribute">name</span>: <span class="hljs-string">'addition'</span>
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@manip</span>.build_append_addition()
+      <span class="hljs-attribute">basic_start_expression</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_pos_builder</span> <span class="hljs-number">1</span>
+      <span class="hljs-attribute">basic_should_equal_after</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_builder</span> <span class="hljs-number">1</span>, <span class="hljs-string">'+'</span>
+    )
+
+    it <span class="hljs-string">"adds addition to the end of the expression"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">1</span>)
+      new_exp = <span class="hljs-property">@manip</span>.build_append_addition().perform(exp)
+      expect(new_exp.expression().last() <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@components</span>.classes.addition).toEqual <span class="hljs-literal">true</span>
+
+
+  describe <span class="hljs-string">"appending subtraction"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_append_subtraction()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+    it_inserts_components_where_pointed_to(
+      <span class="hljs-attribute">name</span>: <span class="hljs-string">'subtraction'</span>
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@manip</span>.build_append_subtraction()
+      <span class="hljs-attribute">basic_start_expression</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_pos_builder</span> <span class="hljs-number">1</span>
+      <span class="hljs-attribute">basic_should_equal_after</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_builder</span> <span class="hljs-number">1</span>, <span class="hljs-string">'-'</span>
+    )
+
+
+    it <span class="hljs-string">"adds subtraction to the end of the expression"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">1</span>)
+      new_exp = <span class="hljs-property">@manip</span>.build_append_subtraction().perform(exp)
+      expect(new_exp.expression().last() <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@components</span>.classes.subtraction).toEqual <span class="hljs-literal">true</span>
+
+  describe <span class="hljs-string">"appending a decimal"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_append_decimal(<span class="hljs-attribute">value</span>: <span class="hljs-number">5</span>)
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+
+    it_inserts_components_where_pointed_to(
+      <span class="hljs-attribute">name</span>: <span class="hljs-string">'append decimal'</span>
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@manip</span>.build_append_decimal()
+      <span class="hljs-attribute">basic_start_expression</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_pos_builder</span> <span class="hljs-string">'1'</span>
+      <span class="hljs-attribute">basic_should_equal_after</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_builder</span> <span class="hljs-string">'1.'</span>
+    )
+
+    it <span class="hljs-string">"adds an implicit multiplication after a variable"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">"doot"</span>})
+      new_exp = <span class="hljs-property">@manip</span>.build_append_decimal().perform(exp).expression()
+      expect(new_exp.last().isNumber()).toBeTruthy()
+      expect(new_exp.last(<span class="hljs-number">1</span>).isMultiplication()).toBeTruthy()
+
+    it <span class="hljs-string">"correctly adds a decimal to the value"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>()
+      exp = <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">1</span>).perform(exp)
+      exp = <span class="hljs-property">@manip</span>.build_append_decimal().perform(exp)
+      exp = <span class="hljs-property">@manip</span>.build_append_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">1</span>).perform(exp)
+      <span class="hljs-property">@expect_value</span>(exp, <span class="hljs-string">'1.1'</span>)
+
+  describe <span class="hljs-string">"square expression"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_square()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+    it <span class="hljs-string">"returns a squared expression"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+      squared = <span class="hljs-property">@manip</span>.build_square().perform(exp)
+      <span class="hljs-property">@expect_value</span>(squared, <span class="hljs-string">'100'</span>)
+
+  describe <span class="hljs-string">"appending root"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_append_root()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+    it <span class="hljs-string">"adds a mulitplication and root to the expression"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>([<span class="hljs-number">1</span>])
+
+      new_exp = <span class="hljs-property">@manip</span>.build_append_root(<span class="hljs-attribute">degree</span>: <span class="hljs-number">2</span>).perform(exp).expression()
+
+      expect(new_exp.last()).toBeInstanceOf <span class="hljs-property">@components</span>.classes.root
+      expect(new_exp.last(<span class="hljs-number">1</span>)).toBeInstanceOf <span class="hljs-property">@components</span>.classes.multiplication
+
+  describe <span class="hljs-string">"appending variable"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_append_variable()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+    it <span class="hljs-string">"adds itself to an empty expression"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>()
+      new_exp = <span class="hljs-property">@manip</span>.build_append_variable(<span class="hljs-attribute">variable</span>: <span class="hljs-string">"doot"</span>).perform(exp)
+      expected = <span class="hljs-property">@exp_builder</span>(<span class="hljs-attribute">variable</span>: <span class="hljs-string">"doot"</span>)
+      expect(new_exp.expression()).toBeAnEqualExpressionTo expected
+
+
+  describe <span class="hljs-string">"reset expression"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_reset()
+
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-literal">false</span> <span class="hljs-comment"># not important at all</span>
+
+    beforeEach<span class="hljs-function"> -&gt;</span>
+      <span class="hljs-property">@reset</span> = <span class="hljs-property">@manip</span>.build_reset()
+      <span class="hljs-property">@result</span> = <span class="hljs-property">@reset</span>.perform()
+
+    it <span class="hljs-string">"returns an empty resulting expression"</span>,<span class="hljs-function"> -&gt;</span>
+      expect(<span class="hljs-property">@result</span>.expression()).toBeAnEqualExpressionTo <span class="hljs-property">@exp_builder</span>()
+
+    it <span class="hljs-string">"returns an pointer which points to that expression"</span>,<span class="hljs-function"> -&gt;</span>
+      expect(<span class="hljs-property">@result</span>.position()).toEqual <span class="hljs-property">@result</span>.expression().id()
+
+  describe <span class="hljs-string">"update position"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_update_position()
+
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>()
+
+
+  describe <span class="hljs-string">"negate last"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_negate_last()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+    it <span class="hljs-string">"will negate the last element"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">1</span>)
+      new_exp = <span class="hljs-property">@manip</span>.build_negate_last().perform(exp)
+      expect(new_exp.expression().last().value()).toEqual -<span class="hljs-number">1</span>
+
+    it <span class="hljs-string">"does nothing when the last element is not a number"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>()
+      new_exp = <span class="hljs-property">@manip</span>.build_negate_last().perform(exp)
+      expect(new_exp.expression().last()).toEqual <span class="hljs-literal">undefined</span>
+
+  describe <span class="hljs-string">"appending pi"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_append_pi()
+
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+    it <span class="hljs-string">"adds a mulitplication and pi to the expression"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">1</span>)
+      new_exp = <span class="hljs-property">@manip</span>.build_append_pi().perform(exp).expression()
+      expect(new_exp.last()).toBeInstanceOf <span class="hljs-property">@components</span>.classes.pi
+      expect(new_exp.last(<span class="hljs-number">1</span>)).toBeInstanceOf <span class="hljs-property">@components</span>.classes.multiplication
+
+    it <span class="hljs-string">"allows the value of pi to be specified"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">1</span>)
+      new_exp = <span class="hljs-property">@manip</span>.build_append_pi(<span class="hljs-attribute">value</span>: <span class="hljs-string">"1"</span>).perform(exp).expression()
+      expect(new_exp.last()).toBeInstanceOf <span class="hljs-property">@components</span>.classes.pi
+      expect(new_exp.last().value()).toEqual <span class="hljs-string">"1"</span>
+
+
+
+
+  describe <span class="hljs-string">"appending a fraction"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_append_fraction()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>()
+
+    it <span class="hljs-string">"adds a numerator/denominator where we expect"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">1</span>)
+      new_exp = <span class="hljs-property">@manip</span>.build_append_fraction().perform(exp).expression()
+
+      expect(new_exp.last()).toBeInstanceOf <span class="hljs-property">@components</span>.classes.fraction
+      expect(new_exp.last().numerator()).toBeInstanceOf <span class="hljs-property">@components</span>.classes.expression
+      expect(new_exp.last().denominator()).toBeInstanceOf <span class="hljs-property">@components</span>.classes.expression
+
+  describe <span class="hljs-string">"appending a function"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_append_fn()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>()
+    it_inserts_components_where_pointed_to(
+      <span class="hljs-attribute">name</span>: <span class="hljs-string">'fn'</span>
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@manip</span>.build_append_fn(<span class="hljs-attribute">name</span>: <span class="hljs-string">'doot'</span>)
+      <span class="hljs-attribute">basic_start_expression</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_pos_builder</span> <span class="hljs-number">1</span>
+      <span class="hljs-attribute">basic_should_equal_after</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@exp_builder</span> <span class="hljs-number">1</span>, <span class="hljs-string">'*'</span>, {<span class="hljs-attribute">fn</span>: [<span class="hljs-string">"doot"</span>, []]}
+    )
+
+    it <span class="hljs-string">"adds a function element"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">1</span>)
+      new_exp = <span class="hljs-property">@manip</span>.build_append_fn().perform(exp).expression()
+
+      expect(new_exp.last()).toBeInstanceOf <span class="hljs-property">@components</span>.classes.fn
+      expect(new_exp.last().argument()).toBeInstanceOf <span class="hljs-property">@components</span>.classes.expression
+
+    it <span class="hljs-string">"inserts a multiplication symbol between variables and functions"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-attribute">variable</span>: <span class="hljs-string">"face"</span>)
+      new_exp = <span class="hljs-property">@manip</span>.build_append_fn(<span class="hljs-attribute">name</span>: <span class="hljs-string">"doot"</span>, <span class="hljs-attribute">argument</span>: <span class="hljs-property">@components</span>.build_expression()).perform(exp).expression()
+      expect(new_exp).toBeAnEqualExpressionTo(
+        <span class="hljs-property">@exp_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">"face"</span>}, <span class="hljs-string">'*'</span>, {<span class="hljs-attribute">fn</span>: [<span class="hljs-string">"doot"</span>, []]})
+      )
+
+  describe <span class="hljs-string">"take the square root"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_square_root()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>)
+
+    it <span class="hljs-string">"finds the square root of an expression"</span>,<span class="hljs-function"> -&gt;</span>
+      exp = <span class="hljs-property">@exp_pos_builder</span>([<span class="hljs-number">4</span>])
+      new_exp = <span class="hljs-property">@manip</span>.build_square_root().perform(exp)
+      expect(new_exp.expression().last().value()).toEqual <span class="hljs-string">'2'</span>
+
+
+  describe <span class="hljs-string">"substituting variables"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_substitute_variables(<span class="hljs-attribute">variables</span>: [{<span class="hljs-attribute">name</span>: <span class="hljs-string">"funky"</span>, <span class="hljs-attribute">value</span>: <span class="hljs-string">"10"</span>}])
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">"funky"</span>})
+
+    it <span class="hljs-string">"substitutes variables"</span>,<span class="hljs-function"> -&gt;</span>
+      exp_pos = <span class="hljs-property">@exp_pos_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">"funky"</span>})
+      manip = <span class="hljs-property">@manip</span>.build_substitute_variables(<span class="hljs-attribute">variables</span>: [{<span class="hljs-attribute">name</span>: <span class="hljs-string">"funky"</span>, <span class="hljs-attribute">value</span>: <span class="hljs-string">"10"</span>}])
+      new_exp = manip.perform(exp_pos)
+      expect(new_exp.expression()).toBeAnEqualExpressionTo(<span class="hljs-property">@exp_pos_builder</span>(<span class="hljs-number">10</span>).expression())
+
+  describe <span class="hljs-string">"getting different sides of an equation"</span>,<span class="hljs-function"> -&gt;</span>
+    describe <span class="hljs-string">"getting left side"</span>,<span class="hljs-function"> -&gt;</span>
+      it_plays_manipulation_role
+        <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+          <span class="hljs-property">@manip</span>.build_get_left_side()
+        <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+          <span class="hljs-property">@exp_pos_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">"funky"</span>}, <span class="hljs-string">'='</span>, {<span class="hljs-attribute">variable</span>: <span class="hljs-string">'chunky'</span>})
+
+      it <span class="hljs-string">"returns left sides of equation"</span>,<span class="hljs-function"> -&gt;</span>
+        expr = <span class="hljs-property">@exp_pos_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">"funky"</span>}, <span class="hljs-string">'='</span>, {<span class="hljs-attribute">variable</span>: <span class="hljs-string">'chunky'</span>})
+        new_exp = <span class="hljs-property">@manip</span>.build_get_left_side().perform(expr)
+        expected = <span class="hljs-property">@exp_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">'funky'</span>})
+        expect(new_exp.expression()).toBeAnEqualExpressionTo(expected)
+
+    describe <span class="hljs-string">"getting right side"</span>,<span class="hljs-function"> -&gt;</span>
+      it_plays_manipulation_role
+        <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+          <span class="hljs-property">@manip</span>.build_get_right_side()
+        <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+          <span class="hljs-property">@exp_pos_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">"funky"</span>}, <span class="hljs-string">'='</span>, {<span class="hljs-attribute">variable</span>: <span class="hljs-string">'chunky'</span>})
+
+      it <span class="hljs-string">"returns right side of equation"</span>,<span class="hljs-function"> -&gt;</span>
+        expr = <span class="hljs-property">@exp_pos_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">"funky"</span>}, <span class="hljs-string">'='</span>, {<span class="hljs-attribute">variable</span>: <span class="hljs-string">'chunky'</span>})
+        new_exp = <span class="hljs-property">@manip</span>.build_get_right_side().perform(expr)
+        expected = <span class="hljs-property">@exp_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">'chunky'</span>})
+        expect(new_exp.expression()).toBeAnEqualExpressionTo(expected)
+
+  describe <span class="hljs-string">"removing the pointed-at element"</span>,<span class="hljs-function"> -&gt;</span>
+    it_plays_manipulation_role
+      <span class="hljs-attribute">subject</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@manip</span>.build_remove_pointed_at()
+      <span class="hljs-attribute">expression_for_performance</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@exp_pos_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">"funky"</span>}, <span class="hljs-string">'='</span>, {<span class="hljs-attribute">variable</span>: <span class="hljs-string">'chunky'</span>})
+
+    it <span class="hljs-string">"removes an item from  an expression"</span>,<span class="hljs-function"> -&gt;</span>
+      expr = <span class="hljs-property">@exp_pos_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">"funky"</span>}, <span class="hljs-string">'='</span>, {<span class="hljs-attribute">variable</span>: <span class="hljs-string">'chunky'</span>})
+      new_exp = <span class="hljs-property">@manip</span>.build_remove_pointed_at().perform(expr)
+      expected = <span class="hljs-property">@exp_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">"funky"</span>}, <span class="hljs-string">'='</span>)
+      expect(new_exp.expression()).toBeAnEqualExpressionTo(expected)
+
+
+  describe <span class="hljs-string">"utilities"</span>,<span class="hljs-function"> -&gt;</span>
+    describe <span class="hljs-string">"updating which element is pointed at"</span>,<span class="hljs-function"> -&gt;</span>
+      it <span class="hljs-string">"changes the place something is pointed at"</span>,<span class="hljs-function"> -&gt;</span>
+        pos_manip = <span class="hljs-property">@manip</span>.utils.build_expression_position_manipulator()
+
+        orig = <span class="hljs-property">@exp_pos_builder</span>({<span class="hljs-attribute">variable</span>: <span class="hljs-string">"funky"</span>}, <span class="hljs-string">'='</span>, {<span class="hljs-attribute">fraction</span>: []})
+
+        orig_pointed = orig.position()
+        new_exp = pos_manip.updatePositionTo orig, <span class="hljs-function"><span class="hljs-params">(exp)</span>-&gt;</span>
+          exp.isExpression() &amp;&amp; exp.parent() &amp;&amp; exp.parent().isFraction()
+        expect(new_exp.position()).<span class="hljs-keyword">not</span>.toEqual(orig_pointed)
+        expect(new_exp.position()).toEqual(new_exp.expression().last().numerator().id())</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

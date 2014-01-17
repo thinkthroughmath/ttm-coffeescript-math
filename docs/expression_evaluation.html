@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>expression_evaluation.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="build_expression_from_javascript_object_spec.html">
+                build_expression_from_javascript_object_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components_spec.html">
+                expression_components_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality_spec.html">
+                expression_equality_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation_spec.html">
+                expression_evaluation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation_spec.html">
+                expression_manipulation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position_spec.html">
+                expression_position_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string_spec.html">
+                expression_to_string_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal_spec.html">
+                expression_traversal_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="feature_spec.html">
+                feature_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="precise_spec.html">
+                precise_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="spec_helpers.html">
+                spec_helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="browser.html">
+                browser.coffee
+              </a>
+            
+              
+              <a class="source" href="math.html">
+                math.coffee
+              </a>
+            
+              
+              <a class="source" href="build_expression_from_javascript_object.html">
+                build_expression_from_javascript_object.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components.html">
+                expression_components.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality.html">
+                expression_equality.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation.html">
+                expression_evaluation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation.html">
+                expression_manipulation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position.html">
+                expression_position.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string.html">
+                expression_to_string.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal.html">
+                expression_traversal.coffee
+              </a>
+            
+              
+              <a class="source" href="precise.html">
+                precise.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>expression_evaluation.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>= require ./base</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+ttm = thinkthroughmath
+logger = ttm.logger
+class_mixer = ttm.class_mixer
+object_refinement = ttm.lib.object_refinement
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EvaluationRefinementBuilder</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(comps, class_mixer, object_refinement, MalformedExpressionError, precise)</span>-&gt;</span>
+    comps = comps
+    refinement = object_refinement.build()
+    refinement.forType(comps.classes.number,
+      {
+        <span class="hljs-attribute">eval</span>:<span class="hljs-function"> -&gt;</span>
+          @  <span class="hljs-comment"># a number returns itself when it evaluates</span>
+      });
+
+    refinement.forType(comps.classes.exponentiation,
+      {
+        <span class="hljs-attribute">eval</span>: <span class="hljs-function"><span class="hljs-params">(evaluation, pass)</span>-&gt;</span>
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> pass != <span class="hljs-string">"exponentiation"</span>
+          <span class="hljs-keyword">if</span> !<span class="hljs-property">@base</span>().isEmpty() &amp;&amp; !<span class="hljs-property">@power</span>().isEmpty()
+            base = refinement.refine(<span class="hljs-property">@base</span>()).eval().toCalculable()
+            power = refinement.refine(<span class="hljs-property">@power</span>()).eval().toCalculable()
+            ttm.logger.info(<span class="hljs-string">"exponentiation"</span>, base, power)
+            comps.classes.number.build(<span class="hljs-attribute">value</span>: Math.pow(base, power))
+          <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
+      });
+
+    refinement.forType(comps.classes.pi,
+      {
+        <span class="hljs-attribute">eval</span>:<span class="hljs-function"> -&gt;</span>
+          comps.classes.number.build(<span class="hljs-attribute">value</span>: <span class="hljs-property">@value</span>())
+      });
+
+    refinement.forType(comps.classes.addition,
+      {
+        <span class="hljs-attribute">eval</span>: <span class="hljs-function"><span class="hljs-params">(evaluation, pass)</span>-&gt;</span>
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> pass != <span class="hljs-string">"addition"</span>
+
+          prev = evaluation.previousValue()
+          next = evaluation.nextValue()
+          <span class="hljs-keyword">if</span> prev &amp;&amp; next
+            evaluation.handledSurrounding()
+            comps.classes.number.build(<span class="hljs-attribute">value</span>: precise.add(prev, next))
+          <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
+      });
+
+    refinement.forType(comps.classes.subtraction,
+      {
+        <span class="hljs-attribute">eval</span>: <span class="hljs-function"><span class="hljs-params">(evaluation, pass)</span>-&gt;</span>
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> pass != <span class="hljs-string">"addition"</span>
+
+          prev = evaluation.previousValue()
+          next = evaluation.nextValue()
+          <span class="hljs-keyword">if</span> prev &amp;&amp; next
+            evaluation.handledSurrounding()
+            comps.classes.number.build(<span class="hljs-attribute">value</span>: precise.sub(prev, next))
+          <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
+      });
+
+
+    refinement.forType(comps.classes.multiplication,
+      {
+        <span class="hljs-attribute">eval</span>: <span class="hljs-function"><span class="hljs-params">(evaluation, pass)</span>-&gt;</span>
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> pass != <span class="hljs-string">"multiplication"</span>
+          prev = evaluation.previousValue()
+          next = evaluation.nextValue()
+          <span class="hljs-keyword">if</span> prev &amp;&amp; next
+            evaluation.handledSurrounding()
+            comps.classes.number.build(<span class="hljs-attribute">value</span>: precise.mul(prev, next))
+          <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
+      });
+
+
+
+    refinement.forType(comps.classes.division,
+      {
+        <span class="hljs-attribute">eval</span>: <span class="hljs-function"><span class="hljs-params">(evaluation, pass)</span>-&gt;</span>
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> pass != <span class="hljs-string">"multiplication"</span>
+          prev = evaluation.previousValue()
+          next = evaluation.nextValue()
+          <span class="hljs-keyword">if</span> prev &amp;&amp; next
+            evaluation.handledSurrounding()
+            comps.classes.number.build(<span class="hljs-attribute">value</span>: precise.div(prev, next))
+          <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
+
+      });
+
+    refinement.forType(comps.classes.fraction,
+      {
+        <span class="hljs-attribute">eval</span>: <span class="hljs-function"><span class="hljs-params">(evaluation, pass)</span>-&gt;</span>
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> pass != <span class="hljs-string">"multiplication"</span>
+          num = refinement.refine(<span class="hljs-property">@numerator</span>()).eval().toCalculable()
+          denom = refinement.refine(<span class="hljs-property">@denominator</span>()).eval().toCalculable()
+          <span class="hljs-keyword">if</span> num &amp;&amp; denom
+            comps.build_number(<span class="hljs-attribute">value</span>: precise.div(num, denom))
+          <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
+      }
+    )
+
+
+    <span class="hljs-property">@refinement_val</span> = refinement
+
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExpressionEvaluationPass</span></span>
+      <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@expression</span>)</span>-&gt;</span>
+        <span class="hljs-property">@expression_index</span> = -<span class="hljs-number">1</span>
+
+      <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(pass_type)</span>-&gt;</span>
+        ret = []
+
+        <span class="hljs-property">@expression_index</span> = <span class="hljs-number">0</span>
+        <span class="hljs-keyword">while</span> <span class="hljs-property">@expression</span>.length &gt; <span class="hljs-property">@expression_index</span>
+          exp = refinement.refine(<span class="hljs-property">@expression</span>[<span class="hljs-property">@expression_index</span>])
+          eval_ret = exp.eval(@, pass_type)
+          <span class="hljs-keyword">if</span> eval_ret
+            <span class="hljs-property">@expression</span>[<span class="hljs-property">@expression_index</span>] = eval_ret
+          <span class="hljs-property">@expression_index</span> += <span class="hljs-number">1</span>
+
+        <span class="hljs-property">@expression</span>
+
+      <span class="hljs-attribute">previousValue</span>:<span class="hljs-function"> -&gt;</span>
+        prev = <span class="hljs-property">@expression</span>[<span class="hljs-property">@expression_index</span> - <span class="hljs-number">1</span>]
+        <span class="hljs-keyword">if</span> prev
+          prev.value()
+
+      <span class="hljs-attribute">nextValue</span>:<span class="hljs-function"> -&gt;</span>
+        next = <span class="hljs-property">@expression</span>[<span class="hljs-property">@expression_index</span> + <span class="hljs-number">1</span>]
+        <span class="hljs-keyword">if</span> next
+          next.value()
+
+      <span class="hljs-attribute">handledPrevious</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@expression</span>.splice(<span class="hljs-property">@expression_index</span> - <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)
+        <span class="hljs-property">@expression_index</span> -= <span class="hljs-number">1</span>
+
+      <span class="hljs-attribute">handledSurrounding</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@handledPrevious</span>()
+        <span class="hljs-property">@expression</span>.splice(<span class="hljs-property">@expression_index</span> + <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)
+
+    class_mixer(ExpressionEvaluationPass)
+
+    refinement.forType(comps.classes.expression,
+      {
+        <span class="hljs-attribute">eval</span>:<span class="hljs-function"> -&gt;</span>
+          expr = <span class="hljs-property">@expression</span>
+          logger.info(<span class="hljs-string">"before parenthetical"</span>, expr)
+          expr = ExpressionEvaluationPass.build(expr).perform(<span class="hljs-string">"parenthetical"</span>)
+          logger.info(<span class="hljs-string">"before exponentiation"</span>, expr)
+          expr = ExpressionEvaluationPass.build(expr).perform(<span class="hljs-string">"exponentiation"</span>)
+          logger.info(<span class="hljs-string">"before multiplication"</span>, expr)
+          expr = ExpressionEvaluationPass.build(expr).perform(<span class="hljs-string">"multiplication"</span>)
+          logger.info(<span class="hljs-string">"before addition"</span>, expr)
+          expr = ExpressionEvaluationPass.build(expr).perform(<span class="hljs-string">"addition"</span>)
+          logger.info(<span class="hljs-string">"before returning"</span>, expr)
+          _(expr).first()
+      });
+
+
+  <span class="hljs-attribute">refinement</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@refinement_val</span>
+
+ttm.class_mixer EvaluationRefinementBuilder
+
+
+<span class="hljs-function"><span class="hljs-title">MalformedExpressionError</span> = <span class="hljs-params">(message)</span>-&gt;</span>
+  <span class="hljs-property">@name</span> = <span class="hljs-string">'MalformedExpressionError'</span>
+  <span class="hljs-property">@message</span> = message
+  <span class="hljs-property">@stack</span> = (<span class="hljs-keyword">new</span> Error()).stack
+MalformedExpressionError.prototype = <span class="hljs-keyword">new</span> Error;
+
+comps = ttm.lib.math.ExpressionComponentSource.build()
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExpressionEvaluation</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@expression</span>, <span class="hljs-property">@opts</span>={})</span>-&gt;</span>
+    <span class="hljs-property">@comps</span> = <span class="hljs-property">@opts</span>.comps || comps
+    <span class="hljs-property">@precise</span> = ttm.lib.math.Precise.build()
+    <span class="hljs-property">@refinement</span> = EvaluationRefinementBuilder.build(<span class="hljs-property">@comps</span>, class_mixer, object_refinement, MalformedExpressionError, <span class="hljs-property">@precise</span>).refinement()
+
+  <span class="hljs-attribute">resultingExpression</span>:<span class="hljs-function"> -&gt;</span>
+    results = <span class="hljs-literal">false</span>
+    <span class="hljs-keyword">try</span>
+      results = <span class="hljs-property">@evaluate</span>()
+    <span class="hljs-keyword">catch</span> e
+      <span class="hljs-keyword">throw</span> e <span class="hljs-keyword">unless</span> e <span class="hljs-keyword">instanceof</span> MalformedExpressionError
+    <span class="hljs-keyword">if</span> results
+      <span class="hljs-property">@comps</span>.build_expression(<span class="hljs-attribute">expression</span>: [results])
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-property">@expression</span>.clone(<span class="hljs-attribute">is_error</span>: <span class="hljs-literal">true</span>)
+
+  <span class="hljs-attribute">evaluate</span>: <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
+    refined = <span class="hljs-property">@refinement</span>.refine(<span class="hljs-property">@expression</span>)
+    results = refined.eval()
+
+class_mixer(ExpressionEvaluation)
+ttm.lib.math.ExpressionEvaluation = ExpressionEvaluation</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

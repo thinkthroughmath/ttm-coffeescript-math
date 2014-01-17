@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>math.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="build_expression_from_javascript_object_spec.html">
+                build_expression_from_javascript_object_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components_spec.html">
+                expression_components_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality_spec.html">
+                expression_equality_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation_spec.html">
+                expression_evaluation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation_spec.html">
+                expression_manipulation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position_spec.html">
+                expression_position_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string_spec.html">
+                expression_to_string_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal_spec.html">
+                expression_traversal_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="feature_spec.html">
+                feature_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="precise_spec.html">
+                precise_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="spec_helpers.html">
+                spec_helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="browser.html">
+                browser.coffee
+              </a>
+            
+              
+              <a class="source" href="math.html">
+                math.coffee
+              </a>
+            
+              
+              <a class="source" href="build_expression_from_javascript_object.html">
+                build_expression_from_javascript_object.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components.html">
+                expression_components.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality.html">
+                expression_equality.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation.html">
+                expression_evaluation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation.html">
+                expression_manipulation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position.html">
+                expression_position.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string.html">
+                expression_to_string.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal.html">
+                expression_traversal.coffee
+              </a>
+            
+              
+              <a class="source" href="precise.html">
+                precise.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>math.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>this is the central point of organization for the math library
+TODO rename this to ‘SlideRule’</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h1 id="tests">Tests</h1>
+<p>The entire SlideRule test suite may be run in your browser by visiting
+<a href="SpecRunner.html">the jasmine test runner page</a></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <h1 id="features">Features</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>For an overview of the features of the entire library,
+see the
+<a href="features_spec.html">features spec</a>,
+which is written to demonstrate this library in action.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <h1 id="requirements">Requirements</h1>
+<ul>
+<li>ttm-coffeescript-utilities — used for ClassMixer, Refinements library</li>
+<li>underscore.js — used for everything</li>
+</ul>
+<p>TODO rename ttm-coffeescript-utilities</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <h1 id="code">Code</h1>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+ttm = thinkthroughmath
+ttm.lib.math ||= {}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>we require all component libraries</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-built_in">require</span> <span class="hljs-string">'./math/precise'</span>
+<span class="hljs-built_in">require</span> <span class="hljs-string">'./math/expression_components'</span>
+<span class="hljs-built_in">require</span> <span class="hljs-string">'./math/expression_equality'</span>
+<span class="hljs-built_in">require</span> <span class="hljs-string">'./math/expression_evaluation'</span>
+<span class="hljs-built_in">require</span> <span class="hljs-string">'./math/expression_manipulation'</span>
+<span class="hljs-built_in">require</span> <span class="hljs-string">'./math/expression_position'</span>
+<span class="hljs-built_in">require</span> <span class="hljs-string">'./math/build_expression_from_javascript_object'</span>
+<span class="hljs-built_in">require</span> <span class="hljs-string">'./math/expression_traversal'</span>
+<span class="hljs-built_in">require</span> <span class="hljs-string">'./math/expression_to_string'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <h1 id="the-mathlib-class">The MathLib Class</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>MathLib is a class which represents the entire math library ‘system’.
+Using a class and instance here lets us override various components,
+which is super useful for testing.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MathLib</span></span>
+
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(opts={})</span>-&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <h2 id="precision">Precision</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>A library for doing ‘precise’
+(i.e. not-hindered-by-floating-point-garbage)
+math. It is slow, hacky, and awful, but it <em>does</em> work for our
+purposes.</p>
+<p>See the
+<a href="./precise.html">precise library</a>
+and the
+<a href="./precise_spec.html">precise library specs</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    precise = opts.precise || ttm.lib.math.Precise.build()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <h2 id="-components-">‘Components’</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>represent the various components of an expression.
+(e.g. ‘numbers’, ‘variables’, ‘exponentiations’)</p>
+<p>See the
+<a href="./precise.html">components library</a>
+and the
+<a href="./precise_spec.html">components library specs</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    comps = opts.comps || ttm.lib.math.ExpressionComponentSource.build(precise)
+    <span class="hljs-property">@components</span> = opts.components || comps
+    <span class="hljs-property">@equation</span> = opts.equation || comps.equation
+    <span class="hljs-property">@expression</span> = opts.expression || comps.expression</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <h2 id="expression-position">Expression Position</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Expression Position acts like an editing “pointer”, which “points” into the
+expression tree at where the expression is being edited.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@expression_position</span> = opts.expression_position || ttm.lib.math.ExpressionPosition</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <h2 id="expressiontraversal">ExpressionTraversal</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Since ‘Expression’ objects are complicated things,
+ExpressionTraversal provides a way to ‘traverse’ them and
+examine them.</p>
+<p>See the
+<a href="./expression_traversal.html">expression traversal library</a>
+and the
+<a href="./expression_traversal_spec.html">expression traversal library specs</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+    <span class="hljs-property">@traversal</span> = opts.traversal || ttm.lib.math.ExpressionTraversalBuilder.build(comps.classes)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <h2 id="commands">Commands</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Commands act upon existing expressions
+there is a foo, there is a bar, there is a baz</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@commands</span> = opts.commands || ttm.lib.math.ExpressionManipulationSource.build(comps, <span class="hljs-property">@expression_position</span>, <span class="hljs-property">@traversal</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <h2 id="misc">Misc</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>A number of other miscellanious components</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@object_to_expression</span> = opts.object_to_expression || ttm.lib.math.BuildExpressionFromJavascriptObject.build(<span class="hljs-attribute">component_builder</span>: <span class="hljs-property">@components</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>Evaluation is used to “evaluate” an expression,
+converting it into another expression</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@evaluation</span> = opts.evaluation || ttm.lib.math.ExpressionEvaluation</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Expression equality is used to determine if an expression is considered equal</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@expression_equality</span> = opts.expression_equality || ttm.lib.math.ExpressionEquality</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Export the math library class</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ttm.lib.math.math_lib = ttm.class_mixer MathLib</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>expression_equality.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="build_expression_from_javascript_object_spec.html">
+                build_expression_from_javascript_object_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components_spec.html">
+                expression_components_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality_spec.html">
+                expression_equality_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation_spec.html">
+                expression_evaluation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation_spec.html">
+                expression_manipulation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position_spec.html">
+                expression_position_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string_spec.html">
+                expression_to_string_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal_spec.html">
+                expression_traversal_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="feature_spec.html">
+                feature_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="precise_spec.html">
+                precise_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="spec_helpers.html">
+                spec_helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="browser.html">
+                browser.coffee
+              </a>
+            
+              
+              <a class="source" href="math.html">
+                math.coffee
+              </a>
+            
+              
+              <a class="source" href="build_expression_from_javascript_object.html">
+                build_expression_from_javascript_object.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components.html">
+                expression_components.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality.html">
+                expression_equality.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation.html">
+                expression_evaluation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation.html">
+                expression_manipulation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position.html">
+                expression_position.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string.html">
+                expression_to_string.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal.html">
+                expression_traversal.coffee
+              </a>
+            
+              
+              <a class="source" href="precise.html">
+                precise.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>expression_equality.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>= require ./base
+= require lib
+= require lib/math/expression_components
+= require lib/math/expression_equality</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+ttm = thinkthroughmath
+class_mixer = ttm.class_mixer
+object_refinement = ttm.lib.object_refinement
+
+
+ref = object_refinement.build()
+comps = ttm.lib.math.ExpressionComponentSource.build()
+
+<span class="hljs-function"><span class="hljs-title">buildIsEqual</span> = <span class="hljs-params">(for_type, additional_method=<span class="hljs-literal">false</span>)</span>-&gt;</span>
+  <span class="hljs-function"><span class="hljs-title">isEqualFunction</span> = <span class="hljs-params">(other, eq_calc)</span>-&gt;</span>
+    same_type = (other <span class="hljs-keyword">instanceof</span> for_type)
+    eq_calc.saveFalseForReport(same_type, <span class="hljs-property">@unrefined</span>(), other,
+      <span class="hljs-string">"different types <span class="hljs-subst">#{for_type.name}</span>"</span>)
+    <span class="hljs-keyword">if</span> same_type
+      <span class="hljs-keyword">if</span> additional_method
+        @[additional_method](other, eq_calc)
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-literal">true</span>
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-literal">false</span>
+  ttm.logger.instrument(<span class="hljs-attribute">name</span>: <span class="hljs-string">"buildIsEqual function"</span>, <span class="hljs-attribute">fn</span>: isEqualFunction)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Addition</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.addition, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.addition))
+  })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Blank</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.blank, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.blank))
+  })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Division</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.division, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.division))
+  })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Exponentiation</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.exponentiation, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.exponentiation, <span class="hljs-string">"checkBaseAndPowerEquality"</span>)),
+  <span class="hljs-attribute">checkBaseAndPowerEquality</span>: <span class="hljs-function"><span class="hljs-params">(other, eq_comp)</span>-&gt;</span>
+    base_equal = ref.refine(<span class="hljs-property">@base</span>()).isEqual(other.base(), eq_comp)
+    power_equal = ref.refine(<span class="hljs-property">@power</span>()).isEqual(other.power(), eq_comp)
+    base_equal &amp;&amp; power_equal <span class="hljs-comment"># no need to save, report comes from below</span>
+  })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Expression</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.expression, {
+  <span class="hljs-attribute">isExpressionEqual</span>: <span class="hljs-function"><span class="hljs-params">(other, eq_calc)</span>-&gt;</span>
+    ttm.logger.info(<span class="hljs-string">"isExpressionEqual"</span>, <span class="hljs-property">@unrefined</span>(), other)
+    match_error = <span class="hljs-property">@is_error</span> == other.is_error
+    eq_calc.saveFalseForReport(match_error, <span class="hljs-property">@unrefined</span>(), other, <span class="hljs-string">"error values not equal"</span>)
+
+    match_open = <span class="hljs-property">@is_open</span> == other.is_open
+    eq_calc.saveFalseForReport(match_open, <span class="hljs-property">@unrefined</span>(), other, <span class="hljs-string">"open values not equal"</span>)
+
+
+    <span class="hljs-keyword">if</span> match_error &amp;&amp; match_open
+      contains_unequal =
+        _.chain<span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@expression</span>)</span>.<span class="hljs-title">map</span><span class="hljs-params">((element, i)-&gt;
+          ret = ref.refine(element).isEqual(other.nth(i), eq_calc)
+          ret
+        )</span>.<span class="hljs-title">contains</span><span class="hljs-params">(<span class="hljs-literal">false</span>)</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+      <span class="hljs-title">if</span> <span class="hljs-title">contains_unequal</span>
+        <span class="hljs-title">false</span>
+      <span class="hljs-title">else</span>
+        <span class="hljs-title">match_size</span> = <span class="hljs-title">_</span><span class="hljs-params">(<span class="hljs-property">@expression</span>)</span>.<span class="hljs-title">size</span><span class="hljs-params">()</span> == <span class="hljs-title">_</span><span class="hljs-params">(other.expression)</span>.<span class="hljs-title">size</span><span class="hljs-params">()</span>
+        <span class="hljs-title">eq_calc</span>.<span class="hljs-title">saveFalseForReport</span><span class="hljs-params">(match_size, <span class="hljs-property">@unrefined</span>(), other, <span class="hljs-string">"size values not equal"</span>)</span>
+    <span class="hljs-title">else</span>
+      <span class="hljs-title">false</span>
+
+  <span class="hljs-title">isEqual</span>: <span class="hljs-params">(other, eq_calc)</span>-&gt;</span>
+
+    same_type = eq_calc.saveFalseForReport((other <span class="hljs-keyword">instanceof</span> comps.classes.expression), <span class="hljs-property">@unrefined</span>(), other,
+      <span class="hljs-string">"Wrong types"</span>)
+    <span class="hljs-keyword">if</span> same_type
+      <span class="hljs-property">@isExpressionEqual</span>(other, eq_calc)
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-literal">false</span>
+})</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Equals</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.equals, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.equals))
+})</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Fn</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.fn, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.fn, <span class="hljs-string">"checkNameAndArgumentEquality"</span>)),
+  <span class="hljs-attribute">checkNameAndArgumentEquality</span>: <span class="hljs-function"><span class="hljs-params">(other, eq_comp)</span>-&gt;</span>
+    name_equal = <span class="hljs-property">@name</span>() == other.name()
+    argument_equal = ref.refine(<span class="hljs-property">@argument</span>()).isEqual(other.argument(), eq_comp)
+    name_equal &amp;&amp; argument_equal
+  })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Fraction</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.fraction, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.fraction, <span class="hljs-string">"checkNumeratorAndDenominatorEquality"</span>)),
+  <span class="hljs-attribute">checkNumeratorAndDenominatorEquality</span>: <span class="hljs-function"><span class="hljs-params">(other, eq_comp)</span>-&gt;</span>
+    numerator_equal = ref.refine(<span class="hljs-property">@numerator</span>()).isEqual(other.numerator(), eq_comp)
+    denominator_equal = ref.refine(<span class="hljs-property">@denominator</span>()).isEqual(other.denominator(), eq_comp)
+    numerator_equal &amp;&amp; denominator_equal
+  })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Multiplication</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.multiplication, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.multiplication))
+  })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Number</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.number, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.number, <span class="hljs-string">"checkNumberValues"</span>)),
+  <span class="hljs-attribute">checkNumberValues</span>: <span class="hljs-function"><span class="hljs-params">(other, eq_calc)</span>-&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>this is bad; TODO fix
+The real “todo” here is that
+numbers are internally of questionable state.
+Im not entirely sure how to state that number expresison components are equal</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    check = parseFloat(<span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@value</span>()}</span>"</span>).toFixed(<span class="hljs-number">2</span>) == parseFloat(<span class="hljs-string">"<span class="hljs-subst">#{other.value()}</span>"</span>).toFixed(<span class="hljs-number">2</span>)
+    eq_calc.saveFalseForReport(check, <span class="hljs-property">@unrefined</span>(), other, <span class="hljs-string">"Numeric values not equal"</span>)
+})
+
+
+ref.forDefault({
+  <span class="hljs-attribute">isEqual</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-built_in">console</span>.log(@); <span class="hljs-keyword">throw</span> <span class="hljs-string">"NOT IMPLEMENTED"</span>
+})</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Pi</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.pi, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.pi))
+})</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Subtraction</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.subtraction, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.subtraction))
+})</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Root</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.root, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.root, <span class="hljs-string">"checkDegreeAndRadicand"</span>)),
+  <span class="hljs-attribute">checkDegreeAndRadicand</span>: <span class="hljs-function"><span class="hljs-params">(other, eq_calc)</span>-&gt;</span>
+    degree_equal = ref.refine(<span class="hljs-property">@degree</span>()).isEqual(other.degree(), eq_calc)
+    radicand_equal = ref.refine(<span class="hljs-property">@radicand</span>()).isEqual(other.radicand(), eq_calc)
+    degree_equal <span class="hljs-keyword">and</span> radicand_equal <span class="hljs-comment"># no need to save, report comes from below</span>
+})</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Variable</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.variable, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.variable, <span class="hljs-string">"checkNames"</span>)),
+  <span class="hljs-attribute">checkNames</span>: <span class="hljs-function"><span class="hljs-params">(other, eq_calc)</span>-&gt;</span>
+    check = <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@name</span>()}</span>"</span> == <span class="hljs-string">"<span class="hljs-subst">#{other.name()}</span>"</span>
+    eq_calc.saveFalseForReport(check, <span class="hljs-property">@unrefined</span>(), other, <span class="hljs-string">"Variable names not equal"</span>)
+})
+
+
+ref.forDefault({
+  <span class="hljs-attribute">isEqual</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-keyword">throw</span> [<span class="hljs-string">"Unimplemented equality refinement for "</span>, <span class="hljs-property">@unrefined</span>()]
+})
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExpressionEquality</span></span>
+  <span class="hljs-attribute">initialize</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@report_saved</span> = <span class="hljs-literal">false</span>
+
+  <span class="hljs-attribute">calculate</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@first</span>, <span class="hljs-property">@second</span>)</span>-&gt;</span>
+    firstp = ref.refine <span class="hljs-property">@first</span>
+    <span class="hljs-property">@_equality_results</span> = firstp.isEqual <span class="hljs-property">@second</span>, @
+    @
+
+  <span class="hljs-attribute">isEqual</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@_equality_results</span>
+
+  <span class="hljs-attribute">notEqualReport</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@a</span>, <span class="hljs-property">@b</span>, <span class="hljs-property">@not_eql_msg</span>)</span>-&gt;</span>
+    <span class="hljs-property">@report_saved</span> = <span class="hljs-literal">true</span>
+
+  <span class="hljs-attribute">saveFalseForReport</span>: <span class="hljs-function"><span class="hljs-params">(value, a, b, msg)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> value
+      <span class="hljs-literal">true</span>
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-property">@notEqualReport</span>(a, b, msg) <span class="hljs-keyword">unless</span> <span class="hljs-property">@report_saved</span>
+      <span class="hljs-literal">false</span>
+
+class_mixer ExpressionEquality
+
+ExpressionEquality.<span class="hljs-function"><span class="hljs-title">isEqual</span> = <span class="hljs-params">(a,b)</span>-&gt;</span>
+  ExpressionEquality.build().calculate(a,b).isEqual()
+
+ExpressionEquality.<span class="hljs-function"><span class="hljs-title">equalityCalculation</span> = <span class="hljs-params">(a,b)</span>-&gt;</span>
+  ec = ExpressionEquality.build()
+  ec.calculate(a,b)
+  ec
+
+ttm.lib.math.ExpressionEquality = ExpressionEquality</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

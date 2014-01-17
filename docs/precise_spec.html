@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>precise_spec.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="build_expression_from_javascript_object_spec.html">
+                build_expression_from_javascript_object_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components_spec.html">
+                expression_components_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality_spec.html">
+                expression_equality_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation_spec.html">
+                expression_evaluation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation_spec.html">
+                expression_manipulation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position_spec.html">
+                expression_position_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string_spec.html">
+                expression_to_string_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal_spec.html">
+                expression_traversal_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="feature_spec.html">
+                feature_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="precise_spec.html">
+                precise_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="spec_helpers.html">
+                spec_helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="browser.html">
+                browser.coffee
+              </a>
+            
+              
+              <a class="source" href="math.html">
+                math.coffee
+              </a>
+            
+              
+              <a class="source" href="build_expression_from_javascript_object.html">
+                build_expression_from_javascript_object.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components.html">
+                expression_components.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality.html">
+                expression_equality.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation.html">
+                expression_evaluation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation.html">
+                expression_manipulation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position.html">
+                expression_position.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string.html">
+                expression_to_string.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal.html">
+                expression_traversal.coffee
+              </a>
+            
+              
+              <a class="source" href="precise.html">
+                precise.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>precise_spec.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ttm = thinkthroughmath
+describe <span class="hljs-string">"precise math"</span>,<span class="hljs-function"> -&gt;</span>
+  beforeEach<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@prec</span> = ttm.lib.math.Precise.build()
+
+  it <span class="hljs-string">"subtracts"</span>,<span class="hljs-function"> -&gt;</span>
+    expect(<span class="hljs-property">@prec</span>.sub(<span class="hljs-string">"5.6"</span>, <span class="hljs-string">"3.5"</span>)).toEqual(<span class="hljs-string">"2.1"</span>)
+
+  it <span class="hljs-string">"adds"</span>,<span class="hljs-function"> -&gt;</span>
+    expect(<span class="hljs-property">@prec</span>.add(<span class="hljs-string">"5.6"</span>, <span class="hljs-string">"3.5"</span>)).toEqual(<span class="hljs-string">"9.1"</span>)
+
+  it <span class="hljs-string">"multiplies"</span>,<span class="hljs-function"> -&gt;</span>
+    expect(<span class="hljs-property">@prec</span>.mul(<span class="hljs-string">"5.6"</span>, <span class="hljs-string">"3.5"</span>)).toEqual(<span class="hljs-string">"19.6"</span>)
+
+  it <span class="hljs-string">"divides"</span>,<span class="hljs-function"> -&gt;</span>
+    expect(<span class="hljs-property">@prec</span>.div(<span class="hljs-string">"5.6"</span>, <span class="hljs-string">"3.5"</span>)).toEqual(<span class="hljs-string">"1.6"</span>)</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

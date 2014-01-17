@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>expression_position.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="build_expression_from_javascript_object_spec.html">
+                build_expression_from_javascript_object_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components_spec.html">
+                expression_components_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality_spec.html">
+                expression_equality_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation_spec.html">
+                expression_evaluation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation_spec.html">
+                expression_manipulation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position_spec.html">
+                expression_position_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string_spec.html">
+                expression_to_string_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal_spec.html">
+                expression_traversal_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="feature_spec.html">
+                feature_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="precise_spec.html">
+                precise_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="spec_helpers.html">
+                spec_helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="browser.html">
+                browser.coffee
+              </a>
+            
+              
+              <a class="source" href="math.html">
+                math.coffee
+              </a>
+            
+              
+              <a class="source" href="build_expression_from_javascript_object.html">
+                build_expression_from_javascript_object.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components.html">
+                expression_components.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality.html">
+                expression_equality.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation.html">
+                expression_evaluation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation.html">
+                expression_manipulation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position.html">
+                expression_position.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string.html">
+                expression_to_string.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal.html">
+                expression_traversal.coffee
+              </a>
+            
+              
+              <a class="source" href="precise.html">
+                precise.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>expression_position.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ttm = thinkthroughmath
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExpressionPosition</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(opts={})</span>-&gt;</span>
+    <span class="hljs-property">@expr</span> = opts.expression
+    <span class="hljs-property">@pos</span> = opts.position
+    <span class="hljs-property">@type_val</span> = opts.type
+  <span class="hljs-attribute">expression</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@expr</span>
+
+  <span class="hljs-attribute">position</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@pos</span>
+
+  <span class="hljs-attribute">type</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@type_val</span>
+
+  <span class="hljs-attribute">isPointedAt</span>: <span class="hljs-function"><span class="hljs-params">(expression_component)</span>-&gt;</span>
+    <span class="hljs-string">"<span class="hljs-subst">#{expression_component.id()}</span>"</span> == <span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@position</span>()}</span>"</span>
+
+  <span class="hljs-attribute">clone</span>: <span class="hljs-function"><span class="hljs-params">(new_vals={})</span>-&gt;</span>
+    data =
+      <span class="hljs-attribute">expression</span>: <span class="hljs-property">@expr</span>.clone()
+      <span class="hljs-attribute">position</span>: <span class="hljs-property">@pos</span>
+      <span class="hljs-attribute">type</span>: <span class="hljs-property">@type_val</span>
+    other = <span class="hljs-property">@klass</span>.build(_.extend({}, data, new_vals))
+    other
+
+  <span class="hljs-property">@buildExpressionPositionAsLast</span>: <span class="hljs-function"><span class="hljs-params">(expression)</span>-&gt;</span>
+    <span class="hljs-property">@build</span> <span class="hljs-attribute">expression</span>: expression, <span class="hljs-attribute">position</span>:   expression.id()
+
+ttm.lib.math.ExpressionPosition = ttm.class_mixer(ExpressionPosition)</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

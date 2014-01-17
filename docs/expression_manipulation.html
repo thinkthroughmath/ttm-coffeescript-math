@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>expression_manipulation.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="build_expression_from_javascript_object_spec.html">
+                build_expression_from_javascript_object_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components_spec.html">
+                expression_components_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality_spec.html">
+                expression_equality_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation_spec.html">
+                expression_evaluation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation_spec.html">
+                expression_manipulation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position_spec.html">
+                expression_position_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string_spec.html">
+                expression_to_string_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal_spec.html">
+                expression_traversal_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="feature_spec.html">
+                feature_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="precise_spec.html">
+                precise_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="spec_helpers.html">
+                spec_helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="browser.html">
+                browser.coffee
+              </a>
+            
+              
+              <a class="source" href="math.html">
+                math.coffee
+              </a>
+            
+              
+              <a class="source" href="build_expression_from_javascript_object.html">
+                build_expression_from_javascript_object.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components.html">
+                expression_components.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality.html">
+                expression_equality.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation.html">
+                expression_evaluation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation.html">
+                expression_manipulation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position.html">
+                expression_position.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string.html">
+                expression_to_string.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal.html">
+                expression_traversal.coffee
+              </a>
+            
+              
+              <a class="source" href="precise.html">
+                precise.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>expression_manipulation.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>= require lib/math/expression_evaluation
+= require lib/math/expression_traversal
+= require ./base</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+ttm = thinkthroughmath
+class_mixer = ttm.class_mixer
+expression_evaluation = ttm.lib.math.ExpressionEvaluation
+object_refinement = ttm.lib.object_refinement</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>First, the utilities that most of these classes link to</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_FinalOpenSubExpressionApplication</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(opts={})</span>-&gt;</span>
+    <span class="hljs-property">@comps</span> = opts.comps
+    <span class="hljs-property">@expr</span> = opts.expr
+    <span class="hljs-property">@found</span> = <span class="hljs-literal">false</span>
+
+  <span class="hljs-attribute">findAndPerformAction</span>: <span class="hljs-function"><span class="hljs-params">(expr)</span>-&gt;</span>
+    subexp = <span class="hljs-property">@nextSubExpression</span>(expr)
+    <span class="hljs-keyword">if</span> subexp
+      subexp = <span class="hljs-property">@findAndPerformAction</span>(subexp)
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@found</span> <span class="hljs-comment"># the child element below me was updated</span>
+      <span class="hljs-property">@updateWithNewSubexp</span>(expr, subexp)
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> expr <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.expression <span class="hljs-keyword">and</span> expr.isOpen()
+      <span class="hljs-property">@found</span> = <span class="hljs-literal">true</span>
+      <span class="hljs-property">@action</span> expr
+    <span class="hljs-keyword">else</span> <span class="hljs-comment"># not closable, not handled, return</span>
+      expr
+
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@action</span>)</span>-&gt;</span>
+    <span class="hljs-property">@findAndPerformAction</span>(<span class="hljs-property">@expr</span>)
+
+  <span class="hljs-attribute">wasFound</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@found</span>
+
+  <span class="hljs-attribute">updateWithNewSubexp</span>: <span class="hljs-function"><span class="hljs-params">(expr, subexp)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> expr <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.expression
+      expr.replaceLast(subexp)
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> expr <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.exponentiation
+      expr.updatePower(subexp)
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> expr <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.root
+      expr.updateRadicand(subexp)
+
+  <span class="hljs-attribute">nextSubExpression</span>: <span class="hljs-function"><span class="hljs-params">(expr)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> expr <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.expression
+      expr.last()
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> expr <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.exponentiation
+      expr.power()
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> expr <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.root
+      expr.radicand()
+    <span class="hljs-keyword">else</span> <span class="hljs-literal">false</span>
+
+  <span class="hljs-attribute">performOrDefault</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@action</span>)</span>-&gt;</span>
+    result = <span class="hljs-property">@findAndPerformAction</span>(<span class="hljs-property">@expr</span>)
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@wasFound</span>()
+      result
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-property">@action</span>(<span class="hljs-property">@expr</span>)
+
+class_mixer(_FinalOpenSubExpressionApplication)
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_ImplicitMultiplication</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@comps</span>)</span>-&gt;</span>
+  <span class="hljs-attribute">invokeD</span>: <span class="hljs-function"><span class="hljs-params">(expression)</span>-&gt;</span>
+    last = expression.last()
+    <span class="hljs-keyword">if</span> last &amp;&amp; (last.isNumber() || last.isExpression() || last.isVariable() || last.isFraction() || last.isExponentiation() || last.isRoot() )
+      expression.appendD(<span class="hljs-property">@comps</span>.build_multiplication())
+      expression
+    <span class="hljs-keyword">else</span>
+      expression
+
+class_mixer(_ImplicitMultiplication)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_ExpressionManipulator</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@expr</span>, <span class="hljs-property">@traversal</span>)</span>-&gt;</span>
+  <span class="hljs-attribute">clone</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@expr</span> = <span class="hljs-property">@expr</span>.clone()
+    @
+  <span class="hljs-attribute">withComponent</span>: <span class="hljs-function"><span class="hljs-params">(position, fn)</span>-&gt;</span>
+    comp = <span class="hljs-property">@traversal</span>.build(<span class="hljs-property">@expr</span>).
+      findForID(position.position())
+    fn(comp)
+    @
+  <span class="hljs-attribute">value</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@expr</span>
+
+class_mixer(_ExpressionManipulator)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>next, the manipulations themselves</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExpressionManipulation</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(opts={})</span>-&gt;</span>
+    <span class="hljs-property">@comps</span> = opts.comps
+    <span class="hljs-property">@pos</span> = opts.pos
+    <span class="hljs-property">@traversal</span> = opts.traversal
+
+  <span class="hljs-attribute">evaluate</span>: <span class="hljs-function"><span class="hljs-params">(exp)</span>-&gt;</span>
+    ret = expression_evaluation.build(exp).resultingExpression()
+  <span class="hljs-attribute">value</span>: <span class="hljs-function"><span class="hljs-params">(exp)</span>-&gt;</span>
+    result = expression_evaluation.build(exp).evaluate()
+    <span class="hljs-keyword">if</span> result <span class="hljs-keyword">then</span> result.value() <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>
+
+  <span class="hljs-attribute">M</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@expr</span>)</span>-&gt;</span>
+    _ExpressionManipulator.build(<span class="hljs-property">@expr</span>, <span class="hljs-property">@traversal</span>)
+
+  <span class="hljs-attribute">isOperator</span>: <span class="hljs-function"><span class="hljs-params">(comp)</span>-&gt;</span>
+    c = <span class="hljs-property">@comps</span>.classes</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>for these manipulations do we consider the comp to be an operator</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">switch</span> comp.klass
+      <span class="hljs-keyword">when</span> c.equals, c.addition, c.subtraction, c.multiplication, c.division
+        <span class="hljs-literal">true</span>
+      <span class="hljs-keyword">else</span> <span class="hljs-literal">false</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>@destructive</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">withoutTrailingOperatorD</span>: <span class="hljs-function"><span class="hljs-params">(exp)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@isOperator</span>(exp.last())
+      exp.withoutLastD()
+    exp
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExpressionPositionManipulator</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@traversal</span>)</span>-&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Calls callback on each node in exp_pos
+The first time callback returns true, it
+returns an updated exp_pos pointing at that node</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">updatePositionTo</span>: <span class="hljs-function"><span class="hljs-params">(exp_pos, callback)</span>-&gt;</span>
+    exp_pos = exp_pos.clone()
+    found = <span class="hljs-literal">false</span>
+    new_pos_id = <span class="hljs-literal">false</span>
+    <span class="hljs-property">@traversal</span>.build<span class="hljs-function"><span class="hljs-params">(exp_pos)</span>.<span class="hljs-title">each</span> <span class="hljs-params">(comp)</span>=&gt;</span>
+      <span class="hljs-keyword">if</span> !found
+        cb_results = callback(comp)
+        <span class="hljs-keyword">if</span> cb_results
+          new_pos_id = comp.id()
+          found = <span class="hljs-literal">true</span>
+    exp_pos.clone(<span class="hljs-attribute">position</span>: new_pos_id)
+
+class_mixer(ExpressionPositionManipulator)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Calculate</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ExpressionManipulation</span></span>
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    results = <span class="hljs-property">@evaluate</span>(expression_position.expression())
+    expression_position.clone(<span class="hljs-attribute">expression</span>: results, <span class="hljs-attribute">position</span>: results.id())
+
+class_mixer(Calculate)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Square</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ExpressionManipulation</span></span>
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    val = <span class="hljs-property">@value</span>(expression_position.expression())
+    new_exp = <span class="hljs-property">@comps</span>.build_expression <span class="hljs-attribute">expression</span>: [<span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: val*val)]
+    <span class="hljs-property">@pos</span>.build(<span class="hljs-attribute">expression</span>: new_exp, <span class="hljs-attribute">position</span>: new_exp.id())
+
+class_mixer(Square)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AppendDecimal</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ExpressionManipulation</span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>@destructive</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">doAppendD</span>: <span class="hljs-function"><span class="hljs-params">(expression, expression_position)</span>-&gt;</span>
+    last = expression.last()
+    <span class="hljs-keyword">if</span> last
+      <span class="hljs-keyword">if</span> last.isNumber()
+        last.futureAsDecimalD(<span class="hljs-literal">true</span>)
+      <span class="hljs-keyword">else</span>
+        _ImplicitMultiplication.build(<span class="hljs-property">@comps</span>).invokeD(expression)
+        new_last = <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">0</span>)
+        new_last.futureAsDecimalD(<span class="hljs-literal">true</span>)
+        expression.appendD(new_last)
+    <span class="hljs-keyword">else</span>
+      new_last = <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">0</span>)
+      new_last.futureAsDecimalD(<span class="hljs-literal">true</span>)
+      expression.appendD(new_last)
+
+
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        <span class="hljs-property">@doAppendD</span>(component, expression_position)
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+    <span class="hljs-title">result_exp</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendDecimal)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendNumber</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">initialize</span>: <span class="hljs-params">(opts={})</span>-&gt;</span>
+    <span class="hljs-keyword">super</span>
+    <span class="hljs-property">@val</span> = opts.value</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>@destructive</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">doAppendD</span>: <span class="hljs-function"><span class="hljs-params">(append_to, expression_position)</span>-&gt;</span>
+    number_to_append = <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-property">@val</span>)
+    last = append_to.last()
+    <span class="hljs-keyword">if</span> last
+      <span class="hljs-keyword">if</span> last <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.number
+        append_to.last().concatenateD(<span class="hljs-property">@val</span>)
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (last <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.exponentiation) <span class="hljs-keyword">or</span> !<span class="hljs-property">@isOperator</span>(last)
+        append_to.appendD(<span class="hljs-property">@comps</span>.build_multiplication())
+        append_to.appendD(number_to_append)
+      <span class="hljs-keyword">else</span>
+        append_to.appendD(number_to_append)
+    <span class="hljs-keyword">else</span>
+      append_to.appendD(number_to_append)
+
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        <span class="hljs-property">@doAppendD</span>(component, expression_position)
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+
+    <span class="hljs-title">result_exp</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendNumber)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">ExponentiateLast</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">initialize</span>: <span class="hljs-params">(opts={})</span>-&gt;</span>
+    <span class="hljs-keyword">super</span>
+    <span class="hljs-property">@power</span> = opts.power
+
+  <span class="hljs-attribute">baseExpression</span>: <span class="hljs-function"><span class="hljs-params">(base)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> base <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.expression
+      base
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-property">@comps</span>.build_expression <span class="hljs-attribute">expression</span>: [base]
+
+  <span class="hljs-attribute">powerExpression</span>: <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
+    power = <span class="hljs-keyword">if</span> <span class="hljs-property">@power</span>
+      <span class="hljs-property">@comps</span>.build_expression <span class="hljs-attribute">expression</span>: [
+        <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-property">@power</span>)
+      ]
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-property">@comps</span>.build_expression <span class="hljs-attribute">expression</span>: []
+
+    power
+
+  <span class="hljs-attribute">exponentiateLastOfComponent</span>: <span class="hljs-function"><span class="hljs-params">(component)</span>-&gt;</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> component.isEmpty()
+    last = component.last()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>in the first case, our base case comes
+from the contents of a previous part of the expression</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> it = last.preceedingSubexpression()
+      base = <span class="hljs-property">@baseExpression</span>(it)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>if the previous element is an operator but has no sub-expression,
+then we are dropping the operator and use the number prior to the operator</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@isOperator</span>(last)
+      component.withoutLastD() <span class="hljs-comment">#remove useless operator</span>
+      base = <span class="hljs-property">@baseExpression</span>(component.last())</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>otherwise, our base is just the number before</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">else</span>
+      base = <span class="hljs-property">@baseExpression</span>(component.last())
+
+    power = <span class="hljs-property">@powerExpression</span>()
+
+    <span class="hljs-property">@pos_id</span> = <span class="hljs-property">@posID</span>(power, component)
+    component.replaceLastD(<span class="hljs-property">@comps</span>.build_exponentiation(<span class="hljs-attribute">base</span>: base, <span class="hljs-attribute">power</span>: power))
+
+  <span class="hljs-attribute">posID</span>: <span class="hljs-function"><span class="hljs-params">(power, component)</span>-&gt;</span>
+    power.id()
+
+
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expression = expression_position.expression()
+    <span class="hljs-keyword">return</span> expression_position <span class="hljs-keyword">if</span> expression.isEmpty()
+
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        <span class="hljs-property">@exponentiateLastOfComponent</span>(component)
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+
+    <span class="hljs-title">result_exp</span>.<span class="hljs-title">clone</span> <span class="hljs-title">position</span>: @<span class="hljs-title">pos_id</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(ExponentiateLast)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendExponentiation</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">initialize</span>: <span class="hljs-params">(opts={})</span>-&gt;</span>
+    <span class="hljs-keyword">super</span>
+    <span class="hljs-property">@exponent_content</span> = opts.power
+
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    exp = <span class="hljs-keyword">if</span> <span class="hljs-property">@exponent_content</span>
+      [<span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-property">@exponent_content</span>)]
+    <span class="hljs-keyword">else</span>
+      []
+
+    base = <span class="hljs-property">@comps</span>.build_expression()
+    power = <span class="hljs-property">@comps</span>.build_expression(<span class="hljs-attribute">expression</span>: exp)
+    exponentiation = <span class="hljs-property">@comps</span>.build_exponentiation(<span class="hljs-attribute">base</span>: base, <span class="hljs-attribute">power</span>: power)
+
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        _ImplicitMultiplication.build(<span class="hljs-property">@comps</span>).invokeD(component)
+        component.appendD(exponentiation)
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+
+    <span class="hljs-title">result_exp</span>.<span class="hljs-title">clone</span><span class="hljs-params">(position: base.id())</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendExponentiation)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendMultiplication</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">perform</span>: <span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expr = expression_position.expression()
+    <span class="hljs-keyword">return</span> expression_position <span class="hljs-keyword">if</span> expr.isEmpty()
+
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        <span class="hljs-property">@withoutTrailingOperatorD</span>(component).appendD(<span class="hljs-property">@comps</span>.build_multiplication())
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+
+    <span class="hljs-title">result_exp</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendMultiplication)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendEquals</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">perform</span>: <span class="hljs-params">(expression_position)</span>-&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>appending an equals moves the cursor to after the equals sign
+so update to that position</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    expression_position = expression_position.clone(<span class="hljs-attribute">position</span>: expression_position.expression().id())
+    equals = <span class="hljs-property">@comps</span>.build_equals()
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        <span class="hljs-property">@withoutTrailingOperatorD</span>(component).appendD(equals)
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+
+    <span class="hljs-title">result_exp</span>
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendEquals)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendDivision</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">perform</span>: <span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expr = expression_position.expression()
+    <span class="hljs-keyword">return</span> expression_position <span class="hljs-keyword">if</span> expr.isEmpty()
+
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        <span class="hljs-property">@withoutTrailingOperatorD</span>(component).appendD(<span class="hljs-property">@comps</span>.build_division())
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+
+
+    <span class="hljs-title">result_exp</span>
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendDivision)</span>
+
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendAddition</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">perform</span>: <span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expr = expression_position.expression()
+    <span class="hljs-keyword">return</span> expression_position <span class="hljs-keyword">if</span> expr.isEmpty()
+
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        <span class="hljs-property">@withoutTrailingOperatorD</span>(component).appendD(<span class="hljs-property">@comps</span>.build_addition())
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+
+    <span class="hljs-title">result_exp</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendAddition)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendSubtraction</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">perform</span>: <span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expr = expression_position.expression()
+
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        <span class="hljs-property">@withoutTrailingOperatorD</span>(component).appendD(<span class="hljs-property">@comps</span>.build_subtraction())
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+    <span class="hljs-title">result_exp</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendSubtraction)</span>
+
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendDivision</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">perform</span>: <span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expr = expression_position.expression()
+    <span class="hljs-keyword">return</span> expression_position <span class="hljs-keyword">if</span> expr.isEmpty()
+
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        <span class="hljs-property">@withoutTrailingOperatorD</span>(component).appendD(<span class="hljs-property">@comps</span>.build_division())
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+
+    <span class="hljs-title">result_exp</span>
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendDivision)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">NegateLast</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">negateComp</span>: <span class="hljs-params">(comp)</span>-&gt;</span>
+    last = comp.last()
+
+    <span class="hljs-keyword">if</span> last <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.number
+      last.negatedD()
+
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expr = expression_position.expression()
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        <span class="hljs-property">@negateComp</span>(component)
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+    <span class="hljs-title">result_exp</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(NegateLast)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendSubExpression</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">perform</span>: <span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expr = expression_position.expression()
+    new_exp = <span class="hljs-property">@comps</span>.build_expression()
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        _ImplicitMultiplication.build(<span class="hljs-property">@comps</span>).invokeD(component)
+        component.appendD(new_exp)
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+    <span class="hljs-title">result_exp</span>.<span class="hljs-title">clone</span> <span class="hljs-title">position</span>: <span class="hljs-title">new_exp</span>.<span class="hljs-title">id</span><span class="hljs-params">()</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendSubExpression)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">ExitSubExpression</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">perform</span>: <span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expr = expression_position.expression()
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        parent = component.parent()
+        <span class="hljs-keyword">if</span> parent # <span class="hljs-keyword">do</span> we have a parent?
+          <span class="hljs-keyword">if</span> parent.isExpression() # parent might <span class="hljs-keyword">not</span> be an expression
+            <span class="hljs-property">@position_id</span> = parent.id() # <span class="hljs-keyword">if</span> so, <span class="hljs-keyword">this</span> <span class="hljs-keyword">is</span> what we want
+          <span class="hljs-keyword">else</span> # parent was <span class="hljs-keyword">not</span> an expression, grandparent must be an expression
+            <span class="hljs-property">@position_id</span> = parent.parent().id()
+        <span class="hljs-keyword">else</span>
+          <span class="hljs-property">@position_id</span> = component.id()
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+    <span class="hljs-title">result_exp</span>.<span class="hljs-title">clone</span> <span class="hljs-title">position</span>: @<span class="hljs-title">position_id</span>
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(ExitSubExpression)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendPi</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">initialize</span>: <span class="hljs-params">(opts={})</span>-&gt;</span>
+    <span class="hljs-keyword">super</span>
+    <span class="hljs-property">@pi_value</span> = opts.value
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expr = expression_position.expression()
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        _ImplicitMultiplication.build(<span class="hljs-property">@comps</span>).invokeD(component)
+        component.appendD(<span class="hljs-property">@comps</span>.build_pi(value: <span class="hljs-property">@pi_value</span>))
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+    <span class="hljs-title">result_exp</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendPi)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendRoot</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">initialize</span>: <span class="hljs-params">(opts={})</span>-&gt;</span>
+    <span class="hljs-keyword">super</span>
+    <span class="hljs-property">@degree</span> = opts.degree
+
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    degree =
+      <span class="hljs-keyword">if</span> <span class="hljs-property">@degree</span>
+        <span class="hljs-property">@comps</span>.build_expression <span class="hljs-attribute">expression</span>: [
+          <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-property">@degree</span>)
+        ]
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-property">@comps</span>.build_expression()
+    radicand = <span class="hljs-property">@comps</span>.build_expression(<span class="hljs-attribute">expression</span>: [])
+    root = <span class="hljs-property">@comps</span>.build_root(<span class="hljs-attribute">degree</span>: degree, <span class="hljs-attribute">radicand</span>: radicand)
+
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        _ImplicitMultiplication.build(<span class="hljs-property">@comps</span>).invokeD(component)
+        component.appendD(root)
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+
+    <span class="hljs-title">result_exp</span>.<span class="hljs-title">clone</span> <span class="hljs-title">position</span>: <span class="hljs-title">radicand</span>.<span class="hljs-title">id</span><span class="hljs-params">()</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendRoot)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendVariable</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">initialize</span>: <span class="hljs-params">(opts={})</span>-&gt;</span>
+    <span class="hljs-keyword">super</span>
+    <span class="hljs-property">@variable_name</span> = opts.variable
+
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expr = expression_position.expression()
+
+    variable = <span class="hljs-property">@comps</span>.build_variable(<span class="hljs-attribute">name</span>: <span class="hljs-property">@variable_name</span>)
+
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        _ImplicitMultiplication.build(<span class="hljs-property">@comps</span>).invokeD(component)
+        component.appendD(variable)
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+    <span class="hljs-title">result_exp</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendVariable)</span>
+
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendFraction</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">perform</span>: <span class="hljs-params">(expression_position)</span>-&gt;</span>
+    exp = expression_position.expression()
+
+    numerator = <span class="hljs-property">@comps</span>.build_expression()
+    denominator = <span class="hljs-property">@comps</span>.build_expression()
+    fraction = <span class="hljs-property">@comps</span>.build_fraction(<span class="hljs-attribute">numerator</span>: numerator, <span class="hljs-attribute">denominator</span>: denominator)
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        _ImplicitMultiplication.build(<span class="hljs-property">@comps</span>).invokeD(component)
+        component.appendD(fraction)
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+
+    <span class="hljs-title">result_exp</span>.<span class="hljs-title">clone</span> <span class="hljs-title">position</span>: <span class="hljs-title">numerator</span>.<span class="hljs-title">id</span><span class="hljs-params">()</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendFraction)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">AppendFn</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">initialize</span>: <span class="hljs-params">(opts={})</span>-&gt;</span>
+    <span class="hljs-keyword">super</span>
+    <span class="hljs-property">@name</span> = opts.name
+
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    exp = expression_position.expression()
+
+    argument = <span class="hljs-property">@comps</span>.build_expression()
+    fn = <span class="hljs-property">@comps</span>.build_fn(<span class="hljs-attribute">name</span>: <span class="hljs-property">@name</span>, <span class="hljs-attribute">argument</span>: argument)
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        _ImplicitMultiplication.build(<span class="hljs-property">@comps</span>).invokeD(component)
+        component.appendD(fn)
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+
+    <span class="hljs-title">result_exp</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(AppendFn)</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">SquareRoot</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
+  <span class="hljs-title">perform</span>: <span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expr = expression_position.expression()
+    value = <span class="hljs-property">@value</span>(expr)
+    root = Math.sqrt(parseFloat(value))
+    <span class="hljs-keyword">unless</span> isNaN(root)
+      expr = <span class="hljs-property">@comps</span>.build_expression <span class="hljs-attribute">expression</span>: [<span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-string">"<span class="hljs-subst">#{root}</span>"</span>)]
+      <span class="hljs-property">@pos</span>.build(<span class="hljs-attribute">expression</span>: expr, <span class="hljs-attribute">position</span>: expr.id())
+    <span class="hljs-keyword">else</span>
+      expr = expr.clone(<span class="hljs-attribute">is_error</span>: <span class="hljs-literal">true</span>)
+      <span class="hljs-property">@pos</span>.build(<span class="hljs-attribute">expression</span>: expr, <span class="hljs-attribute">position</span>: expr.id())
+
+
+class_mixer(SquareRoot)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Reset</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ExpressionManipulation</span></span>
+  <span class="hljs-attribute">perform</span>:  <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    empty_expression = <span class="hljs-property">@comps</span>.build_expression(<span class="hljs-attribute">expression</span>: [])
+    <span class="hljs-property">@pos</span>.build(<span class="hljs-attribute">expression</span>: empty_expression, <span class="hljs-attribute">position</span>: empty_expression.id())
+class_mixer(Reset)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UpdatePosition</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ExpressionManipulation</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(opts={})</span>-&gt;</span>
+    <span class="hljs-keyword">super</span>
+    <span class="hljs-property">@new_position_element_id</span> = opts.element_id
+    <span class="hljs-property">@new_position_element_type</span> = opts.type
+
+  <span class="hljs-attribute">perform</span>:  <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expression_position.clone(<span class="hljs-attribute">position</span>: <span class="hljs-property">@new_position_element_id</span>, <span class="hljs-attribute">type</span>: <span class="hljs-property">@new_position_element_type</span>)
+
+class_mixer(UpdatePosition)
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SubstituteVariables</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ExpressionManipulation</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(opts={})</span>-&gt;</span>
+    <span class="hljs-keyword">super</span>
+    <span class="hljs-property">@variables</span> = opts.variables
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    exp_pos = expression_position.clone()
+    <span class="hljs-property">@traversal</span>.build<span class="hljs-function"><span class="hljs-params">(exp_pos)</span>.<span class="hljs-title">each</span> <span class="hljs-params">(comp)</span>=&gt;</span>
+      <span class="hljs-keyword">if</span> comp <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.variable
+        <span class="hljs-keyword">if</span> <span class="hljs-property">@isThisVariable</span>(comp.name())
+          number = <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-property">@variableValue</span>(comp.name()))
+          comp.parent().replaceD(comp, number)
+
+    exp_pos
+
+  <span class="hljs-attribute">isThisVariable</span>: <span class="hljs-function"><span class="hljs-params">(variable_name)</span>-&gt;</span>
+    <span class="hljs-keyword">for</span> variable <span class="hljs-keyword">in</span> <span class="hljs-property">@variables</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span> <span class="hljs-keyword">if</span> variable.name == variable_name
+
+  <span class="hljs-attribute">variableValue</span>: <span class="hljs-function"><span class="hljs-params">(variable_name)</span>-&gt;</span>
+    <span class="hljs-keyword">for</span> variable <span class="hljs-keyword">in</span> <span class="hljs-property">@variables</span>
+      <span class="hljs-keyword">if</span> variable.name == variable_name
+        <span class="hljs-keyword">return</span> variable.value
+
+class_mixer(SubstituteVariables)
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GetLeftSide</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ExpressionManipulation</span></span>
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expr = expression_position.expression().clone()
+    expr.expression.splice(<span class="hljs-property">@indexOfEquals</span>(expr.expression), expr.expression.length)
+    expression_position.clone(<span class="hljs-attribute">expression</span>: expr)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>find index of</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">indexOfEquals</span>: <span class="hljs-function"><span class="hljs-params">(expression)</span>-&gt;</span>
+    <span class="hljs-keyword">for</span> index, exp <span class="hljs-keyword">of</span> expression
+      <span class="hljs-keyword">return</span> (index*<span class="hljs-number">1</span>) <span class="hljs-keyword">if</span> exp <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.equals
+class_mixer(GetLeftSide)
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GetRightSide</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ExpressionManipulation</span></span>
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    expr = expression_position.expression().clone()
+    expr.expression.splice(<span class="hljs-number">0</span>, <span class="hljs-property">@indexOfEquals</span>(expr.expression)+<span class="hljs-number">1</span>)
+    expression_position.clone(<span class="hljs-attribute">expression</span>: expr)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>find index of</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">indexOfEquals</span>: <span class="hljs-function"><span class="hljs-params">(expression)</span>-&gt;</span>
+    <span class="hljs-keyword">for</span> index, exp <span class="hljs-keyword">of</span> expression
+      <span class="hljs-keyword">return</span> (index*<span class="hljs-number">1</span>) <span class="hljs-keyword">if</span> exp <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@comps</span>.classes.equals
+class_mixer(GetRightSide)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RemovePointedAt</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ExpressionManipulation</span></span>
+  <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
+    result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
+      withComponent<span class="hljs-function"><span class="hljs-params">(expression_position, (component)=&gt;
+        component.withoutLastD()
+      )</span>.<span class="hljs-title">value</span><span class="hljs-params">()</span>
+    <span class="hljs-title">result_exp</span>
+
+<span class="hljs-title">class_mixer</span><span class="hljs-params">(RemovePointedAt)</span>
+
+<span class="hljs-title">exports</span> =
+  <span class="hljs-title">calculate</span>: <span class="hljs-title">Calculate</span>
+  <span class="hljs-title">square</span>: <span class="hljs-title">Square</span>
+  <span class="hljs-title">append_decimal</span>: <span class="hljs-title">AppendDecimal</span>
+  <span class="hljs-title">append_number</span>: <span class="hljs-title">AppendNumber</span>
+  <span class="hljs-title">exponentiate_last</span>: <span class="hljs-title">ExponentiateLast</span>
+  <span class="hljs-title">append_exponentiation</span>: <span class="hljs-title">AppendExponentiation</span>
+  <span class="hljs-title">append_multiplication</span>: <span class="hljs-title">AppendMultiplication</span>
+  <span class="hljs-title">append_addition</span>: <span class="hljs-title">AppendAddition</span>
+  <span class="hljs-title">append_equals</span>: <span class="hljs-title">AppendEquals</span>
+  <span class="hljs-title">append_subtraction</span>: <span class="hljs-title">AppendSubtraction</span>
+  <span class="hljs-title">negate_last</span>: <span class="hljs-title">NegateLast</span>
+  <span class="hljs-title">append_sub_expression</span>: <span class="hljs-title">AppendSubExpression</span>
+  <span class="hljs-title">exit_sub_expression</span>: <span class="hljs-title">ExitSubExpression</span>
+  <span class="hljs-title">append_division</span>: <span class="hljs-title">AppendDivision</span>
+  <span class="hljs-title">append_pi</span>: <span class="hljs-title">AppendPi</span>
+  <span class="hljs-title">update_position</span>: <span class="hljs-title">UpdatePosition</span>
+  <span class="hljs-title">square_root</span>: <span class="hljs-title">SquareRoot</span>
+  <span class="hljs-title">append_root</span>: <span class="hljs-title">AppendRoot</span>
+  <span class="hljs-title">append_variable</span>: <span class="hljs-title">AppendVariable</span>
+  <span class="hljs-title">reset</span>: <span class="hljs-title">Reset</span>
+  <span class="hljs-title">substitute_variables</span>: <span class="hljs-title">SubstituteVariables</span>
+  <span class="hljs-title">get_left_side</span>: <span class="hljs-title">GetLeftSide</span>
+  <span class="hljs-title">get_right_side</span>: <span class="hljs-title">GetRightSide</span>
+  <span class="hljs-title">append_fraction</span>: <span class="hljs-title">AppendFraction</span>
+  <span class="hljs-title">append_fn</span>: <span class="hljs-title">AppendFn</span>
+  <span class="hljs-title">remove_pointed_at</span>: <span class="hljs-title">RemovePointedAt</span>
+
+<span class="hljs-title">class</span> <span class="hljs-title">ExpressionManipulationSource</span>
+  <span class="hljs-title">initialize</span>: <span class="hljs-params">(<span class="hljs-property">@comps</span>, <span class="hljs-property">@pos</span>, <span class="hljs-property">@traversal</span>)</span>-&gt;</span>
+    <span class="hljs-property">@utils</span> = {}
+    <span class="hljs-property">@utils</span>.<span class="hljs-function"><span class="hljs-title">build_expression_position_manipulator</span> = =&gt;</span>
+      ExpressionPositionManipulator.build(<span class="hljs-property">@traversal</span>)
+  <span class="hljs-class">classes: <span class="hljs-title">exports</span></span>
+ttm.class_mixer(ExpressionManipulationSource)
+
+<span class="hljs-keyword">for</span> name, klass <span class="hljs-keyword">of</span> <span class="hljs-built_in">exports</span>
+  build_klass = <span class="hljs-keyword">do</span> <span class="hljs-function"><span class="hljs-params">(name, klass)</span>-&gt;</span>
+    <span class="hljs-function"><span class="hljs-params">(opts={})</span>-&gt;</span>
+      opts.comps = <span class="hljs-property">@comps</span>
+      opts.pos = <span class="hljs-property">@pos</span>
+      opts.traversal = <span class="hljs-property">@traversal</span>
+      klass.build(opts)
+  ExpressionManipulationSource.prototype[<span class="hljs-string">"build_<span class="hljs-subst">#{name}</span>"</span>] = build_klass
+
+ttm.lib.math.ExpressionManipulationSource = ExpressionManipulationSource</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

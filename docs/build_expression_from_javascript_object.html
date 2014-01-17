@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>build_expression_from_javascript_object.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="build_expression_from_javascript_object_spec.html">
+                build_expression_from_javascript_object_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components_spec.html">
+                expression_components_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality_spec.html">
+                expression_equality_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation_spec.html">
+                expression_evaluation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation_spec.html">
+                expression_manipulation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position_spec.html">
+                expression_position_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string_spec.html">
+                expression_to_string_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal_spec.html">
+                expression_traversal_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="feature_spec.html">
+                feature_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="precise_spec.html">
+                precise_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="spec_helpers.html">
+                spec_helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="browser.html">
+                browser.coffee
+              </a>
+            
+              
+              <a class="source" href="math.html">
+                math.coffee
+              </a>
+            
+              
+              <a class="source" href="build_expression_from_javascript_object.html">
+                build_expression_from_javascript_object.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components.html">
+                expression_components.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality.html">
+                expression_equality.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation.html">
+                expression_evaluation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation.html">
+                expression_manipulation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position.html">
+                expression_position.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string.html">
+                expression_to_string.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal.html">
+                expression_traversal.coffee
+              </a>
+            
+              
+              <a class="source" href="precise.html">
+                precise.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>build_expression_from_javascript_object.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+ttm = thinkthroughmath
+logger = ttm.logger
+class_mixer = ttm.class_mixer</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>usage examples found in tests
+conversion process is used
+to figure out which child node has a a cursor
+if any</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConversionProcess</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@processor</span>, <span class="hljs-property">@js_object</span>)</span>-&gt;</span>
+    <span class="hljs-property">@position_val</span> = <span class="hljs-literal">false</span>
+  <span class="hljs-attribute">convert</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@converted_val</span> = <span class="hljs-property">@processor</span>.convert(<span class="hljs-property">@js_object</span>, @)
+  <span class="hljs-attribute">converted</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@converted_val</span>
+  <span class="hljs-attribute">checkForPosition</span>: <span class="hljs-function"><span class="hljs-params">(expression_component, js_object)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> js_object &amp;&amp; js_object.has_cursor
+      <span class="hljs-property">@position_val</span> = expression_component.id()
+  <span class="hljs-attribute">position</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@position_val</span>
+
+class_mixer ConversionProcess
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BuildExpressionFromJavascriptObject</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@opts</span>={})</span>-&gt;</span>
+    <span class="hljs-property">@component_builder</span> = <span class="hljs-property">@opts</span>.component_builder
+    <span class="hljs-keyword">unless</span> <span class="hljs-property">@component_builder</span>
+      <span class="hljs-keyword">throw</span> <span class="hljs-string">"BuildExpressionFromJavascriptObject requires component builder option"</span>
+    <span class="hljs-property">@processor</span> = _JSObjectExpressionProcessor.build()
+
+    <span class="hljs-property">@root_converter</span> = _FromRootObject.build(
+      <span class="hljs-property">@processor</span>,
+      <span class="hljs-property">@component_builder</span>)
+
+    <span class="hljs-property">@number_converter</span> = _FromNumberObject.build(<span class="hljs-property">@component_builder</span>)
+
+    <span class="hljs-property">@exponentiation_converter</span> = _FromExponentiationObject.build(
+      <span class="hljs-property">@processor</span>,
+      <span class="hljs-property">@component_builder</span>)
+
+    <span class="hljs-property">@fraction_converter</span> = _FromFractionObject.build(
+      <span class="hljs-property">@processor</span>,
+      <span class="hljs-property">@component_builder</span>)
+
+    <span class="hljs-property">@fn_converter</span> = _FromFnObject.build(
+      <span class="hljs-property">@processor</span>,
+      <span class="hljs-property">@component_builder</span>
+    )
+
+
+    <span class="hljs-property">@string_literal_converter</span> = _FromStringLiteralObject.build(<span class="hljs-property">@component_builder</span>,{
+      <span class="hljs-string">"+"</span>: <span class="hljs-string">"build_addition"</span>
+      <span class="hljs-string">"-"</span>: <span class="hljs-string">"build_subtraction"</span>
+      <span class="hljs-string">"/"</span>: <span class="hljs-string">"build_division"</span>
+      <span class="hljs-string">"*"</span>: <span class="hljs-string">"build_multiplication"</span>
+      <span class="hljs-string">"="</span>: <span class="hljs-string">"build_equals"</span>
+      <span class="hljs-string">"pi"</span>: <span class="hljs-string">"build_pi"</span>
+    })
+
+    <span class="hljs-property">@closed_expression_converter</span> = _FromClosedExpressionObject.build(
+      <span class="hljs-property">@component_builder</span>,
+      <span class="hljs-property">@processor</span>)
+
+    <span class="hljs-property">@variable_converter</span> = _FromVariableObject.build(
+      <span class="hljs-property">@processor</span>,
+      <span class="hljs-property">@component_builder</span>)
+
+    <span class="hljs-property">@processor</span>.converters [
+      <span class="hljs-property">@closed_expression_converter</span>
+      <span class="hljs-property">@number_converter</span>
+      <span class="hljs-property">@exponentiation_converter</span>
+      <span class="hljs-property">@string_literal_converter</span>
+      <span class="hljs-property">@root_converter</span>
+      <span class="hljs-property">@variable_converter</span>
+      <span class="hljs-property">@fraction_converter</span>
+      <span class="hljs-property">@fn_converter</span>
+      ]
+
+  <span class="hljs-attribute">process</span>: <span class="hljs-function"><span class="hljs-params">(js_object)</span>-&gt;</span>
+    cp = ConversionProcess.build(<span class="hljs-property">@processor</span>, js_object)
+    cp.convert()
+    cp
+
+  <span class="hljs-attribute">buildExpressionFunction</span>:<span class="hljs-function"> -&gt;</span><span class="hljs-function">
+    =&gt;</span>
+      arguments_as_array = Array.prototype.slice.call(arguments, <span class="hljs-number">0</span>)
+      conversion_process = <span class="hljs-property">@process</span>(arguments_as_array)
+      conversion_process.converted()
+
+  <span class="hljs-attribute">buildExpressionPositionFunction</span>:<span class="hljs-function"> -&gt;</span><span class="hljs-function">
+    =&gt;</span>
+      arguments_as_array = Array.prototype.slice.call(arguments, <span class="hljs-number">0</span>)
+      conversion_process = <span class="hljs-property">@process</span>(arguments_as_array)
+      <span class="hljs-keyword">if</span> conversion_process.position()
+        ttm.lib.math.ExpressionPosition.build(
+          <span class="hljs-attribute">expression</span>: conversion_process.converted()
+          <span class="hljs-attribute">position</span>: conversion_process.position()
+        )
+      <span class="hljs-keyword">else</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>default is to use last</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        ttm.lib.math.ExpressionPosition.buildExpressionPositionAsLast(
+          conversion_process.converted()
+        )
+class_mixer BuildExpressionFromJavascriptObject
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_JSObjectExpressionProcessor</span></span>
+  <span class="hljs-attribute">converters</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@js_object_converters</span>)</span>-&gt;</span>
+
+  <span class="hljs-attribute">convert</span>: <span class="hljs-function"><span class="hljs-params">(js_object, conversion_process)</span>-&gt;</span>
+    <span class="hljs-keyword">for</span> converter <span class="hljs-keyword">in</span> <span class="hljs-property">@js_object_converters</span>
+      <span class="hljs-keyword">if</span> converter.isType(js_object)
+        <span class="hljs-keyword">return</span> converter.convert(js_object, conversion_process)
+    <span class="hljs-keyword">throw</span> <span class="hljs-string">"Unhandled js object: <span class="hljs-subst">#{JSON.stringify js_object}</span>"</span>
+class_mixer _JSObjectExpressionProcessor
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_FromClosedExpressionObject</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@expression_builder</span>, <span class="hljs-property">@processor</span>)</span>-&gt;</span>
+  <span class="hljs-attribute">isType</span>: <span class="hljs-function"><span class="hljs-params">(js_object)</span>-&gt;</span>
+    <span class="hljs-keyword">typeof</span> js_object == <span class="hljs-string">"object"</span> &amp;&amp; js_object <span class="hljs-keyword">instanceof</span> Array
+
+  <span class="hljs-attribute">convert</span>: <span class="hljs-function"><span class="hljs-params">(js_object, conversion_process)</span>-&gt;</span>
+    exp = <span class="hljs-property">@expression_builder</span>.build_expression()
+    <span class="hljs-keyword">for</span> part <span class="hljs-keyword">in</span> js_object
+      converted_part = <span class="hljs-property">@processor</span>.convert(part, conversion_process)
+      exp = exp.append(converted_part)
+    conversion_process.checkForPosition(exp, js_object)
+    exp
+class_mixer _FromClosedExpressionObject
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_FromNumberObject</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@number_builder</span>)</span>-&gt;</span>
+
+  <span class="hljs-attribute">isType</span>: <span class="hljs-function"><span class="hljs-params">(js_object)</span>-&gt;</span>
+    <span class="hljs-property">@isJSNumber</span>(js_object) <span class="hljs-keyword">or</span> <span class="hljs-property">@isStringNumber</span>(js_object)
+
+  <span class="hljs-attribute">isJSNumber</span>: <span class="hljs-function"><span class="hljs-params">(js_object)</span>-&gt;</span>
+    <span class="hljs-keyword">typeof</span> js_object == <span class="hljs-string">"number"</span>
+
+  <span class="hljs-attribute">isStringNumber</span>: <span class="hljs-function"><span class="hljs-params">(js_object)</span>-&gt;</span>
+    <span class="hljs-keyword">typeof</span> js_object == <span class="hljs-string">"string"</span> <span class="hljs-keyword">and</span> js_object.search(<span class="hljs-regexp">/\d+/</span>) != -<span class="hljs-number">1</span>
+
+  <span class="hljs-attribute">convert</span>: <span class="hljs-function"><span class="hljs-params">(js_object, conversion_process)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@isJSNumber</span>(js_object)
+      <span class="hljs-property">@number_builder</span>.build_number(<span class="hljs-attribute">value</span>: js_object)
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@isStringNumber</span>(js_object)
+      <span class="hljs-property">@numberFromString</span>(js_object)
+
+  <span class="hljs-attribute">numberFromString</span>: <span class="hljs-function"><span class="hljs-params">(str)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> parsed = str.match <span class="hljs-regexp">/(\d+)(\.)(\d+)/</span>
+      <span class="hljs-property">@number_builder</span>.build_number(<span class="hljs-attribute">value</span>: str)
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> parsed = str.match <span class="hljs-regexp">/(\d+)(\.)/</span>
+      <span class="hljs-property">@number_builder</span>.build_number(<span class="hljs-attribute">value</span>: parsed[<span class="hljs-number">1</span>], <span class="hljs-attribute">future_as_decimal</span>: <span class="hljs-literal">true</span>)
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> parsed = str.match <span class="hljs-regexp">/(\d+)/</span>
+      <span class="hljs-property">@number_builder</span>.build_number(<span class="hljs-attribute">value</span>: parsed[<span class="hljs-number">1</span>])
+
+class_mixer _FromNumberObject
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_FromExponentiationObject</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@processor</span>, <span class="hljs-property">@exponentiation_builder</span>)</span>-&gt;</span>
+  <span class="hljs-attribute">isType</span>: <span class="hljs-function"><span class="hljs-params">(js_object)</span>-&gt;</span> js_object[<span class="hljs-string">'^'</span>] <span class="hljs-keyword">instanceof</span> Array
+  <span class="hljs-attribute">convert</span>: <span class="hljs-function"><span class="hljs-params">(js_object, conversion_process)</span>-&gt;</span>
+
+    base_obj = js_object[<span class="hljs-string">'^'</span>][<span class="hljs-number">0</span>]
+    power_obj = js_object[<span class="hljs-string">'^'</span>][<span class="hljs-number">1</span>]
+
+    base = convert_implicit_subexp(base_obj, <span class="hljs-property">@processor</span>, conversion_process)
+    power = convert_implicit_subexp(power_obj, <span class="hljs-property">@processor</span>, conversion_process)
+
+    conversion_process.checkForPosition(base, base_obj)
+    conversion_process.checkForPosition(power, power_obj)
+
+    <span class="hljs-property">@exponentiation_builder</span>.build_exponentiation(
+      <span class="hljs-attribute">base</span>: base
+      <span class="hljs-attribute">power</span>: power
+    )
+class_mixer _FromExponentiationObject
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_FromRootObject</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@processor</span>, <span class="hljs-property">@root_builder</span>)</span>-&gt;</span>
+  <span class="hljs-attribute">isType</span>: <span class="hljs-function"><span class="hljs-params">(js_object)</span>-&gt;</span> js_object[<span class="hljs-string">'root'</span>] <span class="hljs-keyword">instanceof</span> Array
+  <span class="hljs-attribute">convert</span>: <span class="hljs-function"><span class="hljs-params">(js_object, conversion_process)</span>-&gt;</span>
+    degree = convert_implicit_subexp(js_object[<span class="hljs-string">'root'</span>][<span class="hljs-number">0</span>], <span class="hljs-property">@processor</span>, conversion_process)
+    radicand = convert_implicit_subexp(js_object[<span class="hljs-string">'root'</span>][<span class="hljs-number">1</span>], <span class="hljs-property">@processor</span>, conversion_process)
+
+    <span class="hljs-property">@root_builder</span>.build_root(
+      <span class="hljs-attribute">degree</span>: degree
+      <span class="hljs-attribute">radicand</span>: radicand
+    )
+class_mixer _FromRootObject
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_FromVariableObject</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@processor</span>, <span class="hljs-property">@variable_builder</span>)</span>-&gt;</span>
+  <span class="hljs-attribute">isType</span>: <span class="hljs-function"><span class="hljs-params">(js_object)</span>-&gt;</span> <span class="hljs-keyword">typeof</span> js_object[<span class="hljs-string">'variable'</span>] == <span class="hljs-string">"string"</span>
+  <span class="hljs-attribute">convert</span>: <span class="hljs-function"><span class="hljs-params">(js_object, conversion_process)</span>-&gt;</span>
+    <span class="hljs-property">@variable_builder</span>.build_variable(<span class="hljs-attribute">name</span>: js_object[<span class="hljs-string">'variable'</span>])
+class_mixer _FromVariableObject
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_FromFractionObject</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@processor</span>, <span class="hljs-property">@fraction_builder</span>)</span>-&gt;</span>
+  <span class="hljs-attribute">isType</span>: <span class="hljs-function"><span class="hljs-params">(js_object)</span>-&gt;</span>
+    js_object[<span class="hljs-string">'fraction'</span>] <span class="hljs-keyword">instanceof</span> Array
+
+  <span class="hljs-attribute">convert</span>: <span class="hljs-function"><span class="hljs-params">(js_object, conversion_process)</span>-&gt;</span>
+    num_obj = js_object[<span class="hljs-string">'fraction'</span>][<span class="hljs-number">0</span>]
+    numerator = convert_implicit_subexp(num_obj, <span class="hljs-property">@processor</span>, conversion_process)
+    den_obj = js_object[<span class="hljs-string">'fraction'</span>][<span class="hljs-number">1</span>]
+    denominator = convert_implicit_subexp(den_obj, <span class="hljs-property">@processor</span>, conversion_process)
+
+    conversion_process.checkForPosition(numerator, num_obj)
+    conversion_process.checkForPosition(denominator, den_obj)
+
+    <span class="hljs-property">@fraction_builder</span>.build_fraction(
+      <span class="hljs-attribute">numerator</span>: numerator
+      <span class="hljs-attribute">denominator</span>: denominator
+    )
+class_mixer _FromFractionObject
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_FromFnObject</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@converter</span>, <span class="hljs-property">@fn_builder</span>)</span>-&gt;</span>
+  <span class="hljs-attribute">isType</span>: <span class="hljs-function"><span class="hljs-params">(js_object)</span>-&gt;</span>
+    js_object[<span class="hljs-string">'fn'</span>] <span class="hljs-keyword">instanceof</span> Array
+  <span class="hljs-attribute">convert</span>: <span class="hljs-function"><span class="hljs-params">(js_object, conversion_process)</span>-&gt;</span>
+    name = js_object[<span class="hljs-string">'fn'</span>][<span class="hljs-number">0</span>]
+    argument = convert_implicit_subexp(js_object[<span class="hljs-string">'fn'</span>][<span class="hljs-number">1</span>], <span class="hljs-property">@converter</span>, conversion_process)
+
+    <span class="hljs-property">@fn_builder</span>.build_fn(
+      <span class="hljs-attribute">name</span>: name
+      <span class="hljs-attribute">argument</span>: argument
+    )
+class_mixer _FromFnObject
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">_FromStringLiteralObject</span></span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@converter</span>, <span class="hljs-property">@literal_mappings</span>)</span>-&gt;</span>
+    <span class="hljs-property">@keys</span> = _.keys(<span class="hljs-property">@literal_mappings</span>)
+
+  <span class="hljs-attribute">isType</span>: <span class="hljs-function"><span class="hljs-params">(js_object)</span>-&gt;</span>
+    <span class="hljs-property">@keys</span>.indexOf(js_object) != -<span class="hljs-number">1</span>
+
+  <span class="hljs-attribute">convert</span>: <span class="hljs-function"><span class="hljs-params">(js_object, conversion_process)</span>-&gt;</span>
+    <span class="hljs-property">@converter</span>[<span class="hljs-property">@literal_mappings</span>[js_object]]()
+
+class_mixer _FromStringLiteralObject
+
+<span class="hljs-function"><span class="hljs-title">convert_implicit_subexp</span> = <span class="hljs-params">(subexp, processor, conversion_process)</span>-&gt;</span>
+    maybe_wrapped =
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> subexp == <span class="hljs-string">"number"</span>
+        [subexp]
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> !subexp
+        []
+      <span class="hljs-keyword">else</span>
+        subexp
+    processed = processor.convert(maybe_wrapped, conversion_process)
+
+
+ttm.lib.math.BuildExpressionFromJavascriptObject = BuildExpressionFromJavascriptObject</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

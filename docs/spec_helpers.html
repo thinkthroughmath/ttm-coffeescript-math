@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>spec_helpers.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="build_expression_from_javascript_object_spec.html">
+                build_expression_from_javascript_object_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components_spec.html">
+                expression_components_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality_spec.html">
+                expression_equality_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation_spec.html">
+                expression_evaluation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation_spec.html">
+                expression_manipulation_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position_spec.html">
+                expression_position_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string_spec.html">
+                expression_to_string_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal_spec.html">
+                expression_traversal_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="feature_spec.html">
+                feature_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="precise_spec.html">
+                precise_spec.coffee
+              </a>
+            
+              
+              <a class="source" href="spec_helpers.html">
+                spec_helpers.coffee
+              </a>
+            
+              
+              <a class="source" href="browser.html">
+                browser.coffee
+              </a>
+            
+              
+              <a class="source" href="math.html">
+                math.coffee
+              </a>
+            
+              
+              <a class="source" href="build_expression_from_javascript_object.html">
+                build_expression_from_javascript_object.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_components.html">
+                expression_components.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_equality.html">
+                expression_equality.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_evaluation.html">
+                expression_evaluation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_manipulation.html">
+                expression_manipulation.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_position.html">
+                expression_position.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_to_string.html">
+                expression_to_string.coffee
+              </a>
+            
+              
+              <a class="source" href="expression_traversal.html">
+                expression_traversal.coffee
+              </a>
+            
+              
+              <a class="source" href="precise.html">
+                precise.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>spec_helpers.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>= require lib/logger</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+ttm = thinkthroughmath
+
+LOGGING_TYPE=<span class="hljs-string">"silent"</span>
+<span class="hljs-built_in">window</span>.logger = <span class="hljs-keyword">switch</span> LOGGING_TYPE
+  <span class="hljs-keyword">when</span> <span class="hljs-string">"silent"</span> <span class="hljs-keyword">then</span> ttm.Logger.buildSilent(<span class="hljs-attribute">stringify_objects</span>: <span class="hljs-literal">false</span>)
+  <span class="hljs-keyword">when</span> <span class="hljs-string">"verbose"</span> <span class="hljs-keyword">then</span> ttm.Logger.buildVerbose(<span class="hljs-attribute">stringify_objects</span>: <span class="hljs-literal">false</span>)
+  <span class="hljs-keyword">else</span> ttm.Logger.buildProduction(<span class="hljs-attribute">stringify_objects</span>: <span class="hljs-literal">false</span>)
+class_mixer = ttm.class_mixer
+
+<span class="hljs-function"><span class="hljs-params">(<span class="hljs-built_in">window</span> || <span class="hljs-built_in">global</span>)</span>.<span class="hljs-title">cursor</span> = <span class="hljs-params">(thing)</span>-&gt;</span>
+  thing.has_cursor = <span class="hljs-literal">true</span>
+  thing
+
+beforeEach<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-property">@addMatchers</span>(
+    <span class="hljs-attribute">toBeInstanceOf</span>: <span class="hljs-function"><span class="hljs-params">(type)</span>-&gt;</span>
+      <span class="hljs-property">@message</span> =<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-property">@actual</span> == <span class="hljs-literal">undefined</span>
+          <span class="hljs-string">"Expected undefined to be an instance of <span class="hljs-subst">#{type.name}</span>"</span>
+        <span class="hljs-keyword">else</span>
+          <span class="hljs-string">"Expected <span class="hljs-subst">#{<span class="hljs-property">@actual</span>.constructor.name}</span>(<span class="hljs-subst">#{jasmine.pp <span class="hljs-property">@actual</span>}</span>) to be an instance of <span class="hljs-subst">#{type.name}</span>"</span>
+
+      <span class="hljs-property">@actual</span> &amp;&amp; <span class="hljs-property">@actual</span> <span class="hljs-keyword">instanceof</span> type
+
+    <span class="hljs-attribute">toBeAnEqualExpressionTo</span>: <span class="hljs-function"><span class="hljs-params">(other)</span>-&gt;</span>
+      <span class="hljs-property">@message</span> =<span class="hljs-function"> -&gt;</span>
+        msg = <span class="hljs-string">"Expected <span class="hljs-subst">#{<span class="hljs-property">@actual</span>.toString()}</span> to be equal to <span class="hljs-subst">#{other.toString()}</span>"</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-property">@check</span>.report_saved
+          msg += <span class="hljs-string">", but failed on <span class="hljs-subst">#{<span class="hljs-property">@check</span>.a.toString()}</span>, <span class="hljs-subst">#{<span class="hljs-property">@check</span>.b.toString()}</span>, <span class="hljs-subst">#{<span class="hljs-property">@check</span>.not_eql_msg}</span>"</span>
+        msg
+
+      <span class="hljs-keyword">if</span> <span class="hljs-property">@actual</span> <span class="hljs-keyword">and</span> other
+        <span class="hljs-property">@check</span> = ttm.lib.math.ExpressionEquality.equalityCalculation(<span class="hljs-property">@actual</span>, other)
+        <span class="hljs-property">@check</span>.isEqual()
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-literal">false</span>
+
+  )</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
