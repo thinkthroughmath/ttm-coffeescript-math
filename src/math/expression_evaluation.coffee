@@ -1,10 +1,27 @@
-#= require ./base
+# # Expression Evaluation
 
+# A core feature of the library is the ability to
+# "evaluate" expressions.
+#
+# For example, we might trivially evaluate an expression
+# "1 + 2" to "3".
+
+
+
+# make convenient aliases
 ttm = thinkthroughmath
 logger = ttm.logger
 class_mixer = ttm.class_mixer
 object_refinement = ttm.lib.object_refinement
 
+
+# ## EvaluationRefinementBuilder
+#
+# Evaluation uses the refinement library from
+# ttm-coffeescript-utils.
+#
+# Evaluation methods are added dynamically to expression components
+# when they are needed.
 class EvaluationRefinementBuilder
   initialize: (comps, class_mixer, object_refinement, MalformedExpressionError, precise)->
     comps = comps
@@ -165,6 +182,8 @@ class EvaluationRefinementBuilder
 ttm.class_mixer EvaluationRefinementBuilder
 
 
+# If the library receives an expression that it cannot evaluate, it will
+# throw a MalformedExpressError
 MalformedExpressionError = (message)->
   @name = 'MalformedExpressionError'
   @message = message
