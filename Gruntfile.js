@@ -185,7 +185,10 @@ module.exports = function (grunt) {
 
   });
 
-  grunt.registerTask('watch-serve', [
+
+
+
+  grunt.registerTask('serve', [
     'build',
     'connect:serve',
     'watch'
@@ -206,8 +209,6 @@ module.exports = function (grunt) {
     'build',
     'jasmine'
   ]);
-
-  grunt.registerTask('serve', ['build', 'connect:serve:keepalive']);
 
   grunt.registerTask('default', ['build']);
 
