@@ -172,7 +172,13 @@ class EvaluationRefinementBuilder
           logger.info("before addition", expr)
           expr = ExpressionEvaluationPass.build(expr).perform("addition")
           logger.info("before returning", expr)
-          _(expr).first()
+
+          # If expression does not contain a single item,
+          # There was a problem with the expression
+          if expr.size() != 1
+            throw new MalformedExpressionError("Invalid Expression")
+          else
+            expr.first()
       });
 
 
