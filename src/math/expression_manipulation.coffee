@@ -115,7 +115,8 @@ class ExpressionManipulation
 
   # @destructive
   withoutTrailingOperatorD: (exp)->
-    if @isOperator(exp.last())
+    last = exp.last()
+    if last && @isOperator(exp.last())
       exp.withoutLastD()
     exp
 
