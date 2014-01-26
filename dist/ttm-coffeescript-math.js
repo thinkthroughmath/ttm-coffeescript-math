@@ -1689,12 +1689,12 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
           if (pass !== "addition") {
             return;
           }
-          prev = evaluation.previousValue();
-          next = evaluation.nextValue();
+          prev = evaluation.previous();
+          next = evaluation.next();
           if (prev && next) {
             evaluation.handledSurrounding();
             return comps.classes.number.build({
-              value: precise.add(prev, next)
+              value: precise.add(prev.value(), next.value())
             });
           } else {
             throw new MalformedExpressionError("Invalid Expression");
@@ -1707,12 +1707,12 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
           if (pass !== "addition") {
             return;
           }
-          prev = evaluation.previousValue();
-          next = evaluation.nextValue();
+          prev = evaluation.previous();
+          next = evaluation.next();
           if (prev && next) {
             evaluation.handledSurrounding();
             return comps.classes.number.build({
-              value: precise.sub(prev, next)
+              value: precise.sub(prev.value(), next.value())
             });
           } else {
             throw new MalformedExpressionError("Invalid Expression");
@@ -1725,12 +1725,13 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
           if (pass !== "multiplication") {
             return;
           }
-          prev = evaluation.previousValue();
-          next = evaluation.nextValue();
+          prev = evaluation.previous();
+          next = evaluation.next();
           if (prev && next) {
             evaluation.handledSurrounding();
+            next = refinement.refine(next)["eval"](evaluation, pass).toCalculable();
             return comps.classes.number.build({
-              value: precise.mul(prev, next)
+              value: precise.mul(prev.value(), next)
             });
           } else {
             throw new MalformedExpressionError("Invalid Expression");
@@ -1743,12 +1744,12 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
           if (pass !== "multiplication") {
             return;
           }
-          prev = evaluation.previousValue();
-          next = evaluation.nextValue();
+          prev = evaluation.previous();
+          next = evaluation.next();
           if (prev && next) {
             evaluation.handledSurrounding();
             return comps.classes.number.build({
-              value: precise.div(prev, next)
+              value: precise.div(prev.value(), next.value())
             });
           } else {
             throw new MalformedExpressionError("Invalid Expression");
@@ -1761,8 +1762,8 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
           if (pass !== "multiplication") {
             return;
           }
-          num = refinement.refine(this.numerator())["eval"]().toCalculable();
-          denom = refinement.refine(this.denominator())["eval"]().toCalculable();
+          num = refinement.refine(this.numerator())["eval"](evaluation, pass).toCalculable();
+          denom = refinement.refine(this.denominator())["eval"](evaluation, pass).toCalculable();
           if (num && denom) {
             return comps.build_number({
               value: precise.div(num, denom)
@@ -1796,20 +1797,12 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
           return this.expression;
         };
 
-        ExpressionEvaluationPass.prototype.previousValue = function() {
-          var prev;
-          prev = this.expression[this.expression_index - 1];
-          if (prev) {
-            return prev.value();
-          }
+        ExpressionEvaluationPass.prototype.previous = function() {
+          return this.expression[this.expression_index - 1];
         };
 
-        ExpressionEvaluationPass.prototype.nextValue = function() {
-          var next;
-          next = this.expression[this.expression_index + 1];
-          if (next) {
-            return next.value();
-          }
+        ExpressionEvaluationPass.prototype.next = function() {
+          return this.expression[this.expression_index + 1];
         };
 
         ExpressionEvaluationPass.prototype.handledPrevious = function() {
@@ -1839,7 +1832,11 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
           logger.info("before addition", expr);
           expr = ExpressionEvaluationPass.build(expr).perform("addition");
           logger.info("before returning", expr);
-          return _(expr).first();
+          if (expr.size() !== 1) {
+            throw new MalformedExpressionError("Invalid Expression");
+          } else {
+            return expr.first();
+          }
         }
       });
     };
@@ -2105,7 +2102,9 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
     };
 
     ExpressionManipulation.prototype.withoutTrailingOperatorD = function(exp) {
-      if (this.isOperator(exp.last())) {
+      var last;
+      last = exp.last();
+      if (last && this.isOperator(exp.last())) {
         exp.withoutLastD();
       }
       return exp;

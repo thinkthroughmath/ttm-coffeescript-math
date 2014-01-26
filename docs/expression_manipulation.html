@@ -59,13 +59,13 @@
               </a>
             
               
-              <a class="source" href="feature_spec.html">
-                feature_spec.coffee
+              <a class="source" href="precise_spec.html">
+                precise_spec.coffee
               </a>
             
               
-              <a class="source" href="precise_spec.html">
-                precise_spec.coffee
+              <a class="source" href="regression_spec.html">
+                regression_spec.coffee
               </a>
             
               
@@ -313,7 +313,8 @@ class_mixer(_ExpressionManipulator)</pre></div></div>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">withoutTrailingOperatorD</span>: <span class="hljs-function"><span class="hljs-params">(exp)</span>-&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@isOperator</span>(exp.last())
+    last = exp.last()
+    <span class="hljs-keyword">if</span> last &amp;&amp; <span class="hljs-property">@isOperator</span>(exp.last())
       exp.withoutLastD()
     exp
 

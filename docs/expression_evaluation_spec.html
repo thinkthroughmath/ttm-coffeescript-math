@@ -59,13 +59,13 @@
               </a>
             
               
-              <a class="source" href="feature_spec.html">
-                feature_spec.coffee
+              <a class="source" href="precise_spec.html">
+                precise_spec.coffee
               </a>
             
               
-              <a class="source" href="precise_spec.html">
-                precise_spec.coffee
+              <a class="source" href="regression_spec.html">
+                regression_spec.coffee
               </a>
             
               
@@ -196,18 +196,8 @@ describe <span class="hljs-string">"math expression evaluation"</span>,<span cla
 
   it <span class="hljs-string">"evaluates fractional division"</span>,<span class="hljs-function"> -&gt;</span>
     <span class="hljs-property">@expect_evaluation</span>(
-      {<span class="hljs-attribute">fraction</span>: [<span class="hljs-string">'20'</span>, <span class="hljs-string">'2.5'</span>]}
+      {<span class="hljs-attribute">fraction</span>: [<span class="hljs-string">'20'</span>, <span class="hljs-string">'2.5'</span>]},
       <span class="hljs-string">'8'</span>
-    )
-
-  it <span class="hljs-string">"evaluates this expression correctly"</span>,<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@expect_evaluation</span>(
-      [
-        [
-          <span class="hljs-string">"41"</span>, <span class="hljs-string">'/'</span>, <span class="hljs-string">"32.75"</span>, <span class="hljs-string">'-'</span>, <span class="hljs-string">'1'</span>
-        ], <span class="hljs-string">'*'</span>, <span class="hljs-string">'100'</span>
-      ],
-      <span class="hljs-string">'25.19'</span>
     )</pre></div></div>
             
         </li>

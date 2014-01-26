@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>expression_evaluation.coffee</title>
+  <title>Expression Evaluation</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -59,13 +59,13 @@
               </a>
             
               
-              <a class="source" href="feature_spec.html">
-                feature_spec.coffee
+              <a class="source" href="precise_spec.html">
+                precise_spec.coffee
               </a>
             
               
-              <a class="source" href="precise_spec.html">
-                precise_spec.coffee
+              <a class="source" href="regression_spec.html">
+                regression_spec.coffee
               </a>
             
               
@@ -134,12 +134,6 @@
     
     <ul class="sections">
         
-          <li id="title">
-              <div class="annotation">
-                  <h1>expression_evaluation.coffee</h1>
-              </div>
-          </li>
-        
         
         
         <li id="section-1">
@@ -148,17 +142,62 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <p>= require ./base</p>
+              <h1 id="expression-evaluation">Expression Evaluation</h1>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>
-ttm = thinkthroughmath
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>A core feature of the library is the ability to
+“evaluate” expressions.</p>
+<p>For example, we might trivially evaluate an expression
+“1 + 2” to “3”.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>make convenient aliases</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>ttm = thinkthroughmath
 logger = ttm.logger
 class_mixer = ttm.class_mixer
-object_refinement = ttm.lib.object_refinement
+object_refinement = ttm.lib.object_refinement</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <h2 id="evaluationrefinementbuilder">EvaluationRefinementBuilder</h2>
+<p>Evaluation uses the refinement library from
+ttm-coffeescript-utils.</p>
+<p>Evaluation methods are added dynamically to expression components
+when they are needed.</p>
 
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EvaluationRefinementBuilder</span></span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EvaluationRefinementBuilder</span></span>
   <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(comps, class_mixer, object_refinement, MalformedExpressionError, precise)</span>-&gt;</span>
     comps = comps
     refinement = object_refinement.build()
@@ -192,11 +231,11 @@ object_refinement = ttm.lib.object_refinement
         <span class="hljs-attribute">eval</span>: <span class="hljs-function"><span class="hljs-params">(evaluation, pass)</span>-&gt;</span>
           <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> pass != <span class="hljs-string">"addition"</span>
 
-          prev = evaluation.previousValue()
-          next = evaluation.nextValue()
+          prev = evaluation.previous()
+          next = evaluation.next()
           <span class="hljs-keyword">if</span> prev &amp;&amp; next
             evaluation.handledSurrounding()
-            comps.classes.number.build(<span class="hljs-attribute">value</span>: precise.add(prev, next))
+            comps.classes.number.build(<span class="hljs-attribute">value</span>: precise.add(prev.value(), next.value()))
           <span class="hljs-keyword">else</span>
             <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
       });
@@ -206,11 +245,11 @@ object_refinement = ttm.lib.object_refinement
         <span class="hljs-attribute">eval</span>: <span class="hljs-function"><span class="hljs-params">(evaluation, pass)</span>-&gt;</span>
           <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> pass != <span class="hljs-string">"addition"</span>
 
-          prev = evaluation.previousValue()
-          next = evaluation.nextValue()
+          prev = evaluation.previous()
+          next = evaluation.next()
           <span class="hljs-keyword">if</span> prev &amp;&amp; next
             evaluation.handledSurrounding()
-            comps.classes.number.build(<span class="hljs-attribute">value</span>: precise.sub(prev, next))
+            comps.classes.number.build(<span class="hljs-attribute">value</span>: precise.sub(prev.value(), next.value()))
           <span class="hljs-keyword">else</span>
             <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
       });
@@ -220,11 +259,12 @@ object_refinement = ttm.lib.object_refinement
       {
         <span class="hljs-attribute">eval</span>: <span class="hljs-function"><span class="hljs-params">(evaluation, pass)</span>-&gt;</span>
           <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> pass != <span class="hljs-string">"multiplication"</span>
-          prev = evaluation.previousValue()
-          next = evaluation.nextValue()
+          prev = evaluation.previous()
+          next = evaluation.next()
           <span class="hljs-keyword">if</span> prev &amp;&amp; next
             evaluation.handledSurrounding()
-            comps.classes.number.build(<span class="hljs-attribute">value</span>: precise.mul(prev, next))
+            next = refinement.refine(next).eval(evaluation, pass).toCalculable()
+            comps.classes.number.build(<span class="hljs-attribute">value</span>: precise.mul(prev.value(), next))
           <span class="hljs-keyword">else</span>
             <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
       });
@@ -235,11 +275,11 @@ object_refinement = ttm.lib.object_refinement
       {
         <span class="hljs-attribute">eval</span>: <span class="hljs-function"><span class="hljs-params">(evaluation, pass)</span>-&gt;</span>
           <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> pass != <span class="hljs-string">"multiplication"</span>
-          prev = evaluation.previousValue()
-          next = evaluation.nextValue()
+          prev = evaluation.previous()
+          next = evaluation.next()
           <span class="hljs-keyword">if</span> prev &amp;&amp; next
             evaluation.handledSurrounding()
-            comps.classes.number.build(<span class="hljs-attribute">value</span>: precise.div(prev, next))
+            comps.classes.number.build(<span class="hljs-attribute">value</span>: precise.div(prev.value(), next.value()))
           <span class="hljs-keyword">else</span>
             <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
 
@@ -249,8 +289,8 @@ object_refinement = ttm.lib.object_refinement
       {
         <span class="hljs-attribute">eval</span>: <span class="hljs-function"><span class="hljs-params">(evaluation, pass)</span>-&gt;</span>
           <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> pass != <span class="hljs-string">"multiplication"</span>
-          num = refinement.refine(<span class="hljs-property">@numerator</span>()).eval().toCalculable()
-          denom = refinement.refine(<span class="hljs-property">@denominator</span>()).eval().toCalculable()
+          num = refinement.refine(<span class="hljs-property">@numerator</span>()).eval(evaluation, pass).toCalculable()
+          denom = refinement.refine(<span class="hljs-property">@denominator</span>()).eval(evaluation, pass).toCalculable()
           <span class="hljs-keyword">if</span> num &amp;&amp; denom
             comps.build_number(<span class="hljs-attribute">value</span>: precise.div(num, denom))
           <span class="hljs-keyword">else</span>
@@ -278,15 +318,11 @@ object_refinement = ttm.lib.object_refinement
 
         <span class="hljs-property">@expression</span>
 
-      <span class="hljs-attribute">previousValue</span>:<span class="hljs-function"> -&gt;</span>
-        prev = <span class="hljs-property">@expression</span>[<span class="hljs-property">@expression_index</span> - <span class="hljs-number">1</span>]
-        <span class="hljs-keyword">if</span> prev
-          prev.value()
+      <span class="hljs-attribute">previous</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@expression</span>[<span class="hljs-property">@expression_index</span> - <span class="hljs-number">1</span>]
 
-      <span class="hljs-attribute">nextValue</span>:<span class="hljs-function"> -&gt;</span>
-        next = <span class="hljs-property">@expression</span>[<span class="hljs-property">@expression_index</span> + <span class="hljs-number">1</span>]
-        <span class="hljs-keyword">if</span> next
-          next.value()
+      <span class="hljs-attribute">next</span>:<span class="hljs-function"> -&gt;</span>
+        <span class="hljs-property">@expression</span>[<span class="hljs-property">@expression_index</span> + <span class="hljs-number">1</span>]
 
       <span class="hljs-attribute">handledPrevious</span>:<span class="hljs-function"> -&gt;</span>
         <span class="hljs-property">@expression</span>.splice(<span class="hljs-property">@expression_index</span> - <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)
@@ -310,18 +346,49 @@ object_refinement = ttm.lib.object_refinement
           expr = ExpressionEvaluationPass.build(expr).perform(<span class="hljs-string">"multiplication"</span>)
           logger.info(<span class="hljs-string">"before addition"</span>, expr)
           expr = ExpressionEvaluationPass.build(expr).perform(<span class="hljs-string">"addition"</span>)
-          logger.info(<span class="hljs-string">"before returning"</span>, expr)
-          _(expr).first()
+          logger.info(<span class="hljs-string">"before returning"</span>, expr)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>If expression does not contain a single item,
+There was a problem with the expression</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> expr.size() != <span class="hljs-number">1</span>
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
+          <span class="hljs-keyword">else</span>
+            expr.first()
       });
 
 
   <span class="hljs-attribute">refinement</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-property">@refinement_val</span>
 
-ttm.class_mixer EvaluationRefinementBuilder
+ttm.class_mixer EvaluationRefinementBuilder</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>If the library receives an expression that it cannot evaluate, it will
+throw a MalformedExpressError</p>
 
-
-<span class="hljs-function"><span class="hljs-title">MalformedExpressionError</span> = <span class="hljs-params">(message)</span>-&gt;</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-title">MalformedExpressionError</span> = <span class="hljs-params">(message)</span>-&gt;</span>
   <span class="hljs-property">@name</span> = <span class="hljs-string">'MalformedExpressionError'</span>
   <span class="hljs-property">@message</span> = message
   <span class="hljs-property">@stack</span> = (<span class="hljs-keyword">new</span> Error()).stack
