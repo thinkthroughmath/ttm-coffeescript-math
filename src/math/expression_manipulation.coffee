@@ -5,6 +5,7 @@
 ttm = thinkthroughmath
 class_mixer = ttm.class_mixer
 expression_evaluation = ttm.lib.math.ExpressionEvaluation
+
 object_refinement = ttm.lib.object_refinement
 
 
@@ -98,9 +99,14 @@ class ExpressionManipulation
 
   evaluate: (exp)->
     ret = expression_evaluation.build(exp).resultingExpression()
+
   value: (exp)->
     result = expression_evaluation.build(exp).evaluate()
     if result then result.value() else 0
+
+  catchMalformedExpressionReturningError: (fn)->
+    expression_evaluation.build().catchMalformedExpressionReturningError ->
+      fn()
 
   M: (@expr)->
     _ExpressionManipulator.build(@expr, @traversal)
@@ -149,8 +155,9 @@ class_mixer(Calculate)
 
 class Square extends ExpressionManipulation
   perform: (expression_position)->
-    val = @value(expression_position.expression())
-    new_exp = @comps.build_expression expression: [@comps.build_number(value: val*val)]
+    new_exp = @catchMalformedExpressionReturningError =>
+      val = @value(expression_position.expression())
+      @comps.build_expression expression: [@comps.build_number(value: val*val)]
     @pos.build(expression: new_exp, position: new_exp.id())
 
 class_mixer(Square)
@@ -530,14 +537,14 @@ class_mixer(AppendFn)
 class SquareRoot extends ExpressionManipulation
   perform: (expression_position)->
     expr = expression_position.expression()
-    value = @value(expr)
-    root = Math.sqrt(parseFloat(value))
-    unless isNaN(root)
-      expr = @comps.build_expression expression: [@comps.build_number(value: "#{root}")]
-      @pos.build(expression: expr, position: expr.id())
-    else
-      expr = expr.clone(is_error: true)
-      @pos.build(expression: expr, position: expr.id())
+    new_exp = @catchMalformedExpressionReturningError =>
+      value = @value(expr)
+      root = Math.sqrt(parseFloat(value))
+      unless isNaN(root)
+        @comps.build_expression expression: [@comps.build_number(value: "#{root}")]
+      else
+        expr = expr.clone(is_error: true)
+    @pos.build(expression: new_exp, position: expr.id())
 
 
 class_mixer(SquareRoot)

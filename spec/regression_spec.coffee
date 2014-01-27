@@ -4,7 +4,7 @@ expect_evaluation = (orig, goal)->
   new_exp = @evaluation.build(exp).resultingExpression()
   expect(new_exp).toBeAnEqualExpressionTo @exp(goal)
 
-describe "Bugs: ", ->
+describe "regression tests / bugs: ", ->
   describe "expression evaluation", ->
     beforeEach ->
       @evaluation = ttm.lib.math.ExpressionEvaluation
@@ -29,14 +29,14 @@ describe "Bugs: ", ->
       )
 
 
-    it "throws a malformed expression error when expression contains an incomplete subexpression", ->
+    it "returns an isError() expression when expression contains an incomplete subexpression", ->
+
       expr = @expp()
       expr = @math.commands.build_append_number({value: 78}).perform(expr)
       expr = @math.commands.build_append_multiplication().perform(expr)
       expr = @math.commands.build_append_sub_expression().perform(expr)
-      expect(->
-        expr = @math.commands.build_square_root().perform(expr)
-      ).toThrow()
+      expr = @math.commands.build_square_root().perform(expr)
+      expect(expr.expression().isError()).toBeTruthy()
 
     it "handles this case that was a bug in the equationbuilder", ->
       expr = @expp()

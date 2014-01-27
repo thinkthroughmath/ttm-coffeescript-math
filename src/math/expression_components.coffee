@@ -40,9 +40,6 @@ class Expression extends ExpressionComponent
   @buildWithContent: (content)->
     @build(expression: content)
 
-  @buildError: (content)->
-    @build(is_error: true)
-
   @buildUnlessExpression: (content)->
     if content instanceof @comps.classes.expression
       content
@@ -214,6 +211,9 @@ class Number extends ExpressionComponent
   hasDecimal: ->
     /\./.test(@val)
 
+  # this is wrong, and should be handled in some other way
+  # the precise lib is passed around extensively just to support
+  # this single case, and very likely this normalization should occur in some other layer
   normalizeValue: (val)->
     val = "#{val}"
     if val.search(/\//) != -1
@@ -429,6 +429,38 @@ class ExpressionIDSource
 
 ttm.class_mixer(ExpressionIDSource)
 
+
+
+
+
+
+
+
+# ## Expression Component Exports
+
+# Here we create the components that will finally be exported
+# An ExpressionComponentSource instance provides the creation of a new
+# component, ensuring each component that is built with it comes out
+# with a source-unique ID.
+#
+# An ExpressionComponentSource will have the following methods:
+# * build_expression
+# * build_addition
+# * build_number
+# * build_multiplication
+# * build_division
+# * build_subtraction
+# * build_exponentiation
+# * build_pi
+# * build_equals
+# * build_blank
+# * build_root
+# * build_variable
+# * build_fraction
+# * build_fn
+# * build_number
+# * build_error
+
 components =
   expression: Expression
   addition: Addition
@@ -465,6 +497,11 @@ ExpressionComponentSource.prototype.build_number = (opts={})->
   opts.id ||= @id_source.next()
   opts.precise_lib ||= @precise_lib
   Number.build(opts)
+
+ExpressionComponentSource.prototype.build_error = (opts={})->
+  opts.id ||= @id_source.next()
+  opts.is_error = true
+  Expression.build(opts)
 
 
 ttm.lib.math.ExpressionComponentSource =

@@ -204,19 +204,24 @@ class ExpressionEvaluation
     @refinement = EvaluationRefinementBuilder.build(@comps, class_mixer, object_refinement, MalformedExpressionError, @precise).refinement()
 
   resultingExpression: ->
-    results = false
-    try
-      results = @evaluate()
-    catch e
-      throw e unless e instanceof MalformedExpressionError
-    if results
-      @comps.build_expression(expression: [results])
-    else
-      @expression.clone(is_error: true)
+    @catchMalformedExpressionReturningError =>
+      @comps.build_expression(expression: [@evaluate()])
 
   evaluate: ()->
     refined = @refinement.refine(@expression)
-    results = refined.eval()
+    refined.eval()
+
+  catchMalformedExpressionReturningError: (fn)->
+    results = false
+    try
+      results = fn()
+    catch e
+      throw e unless e instanceof MalformedExpressionError
+    if results
+      results
+    else
+      @comps.build_error()
 
 class_mixer(ExpressionEvaluation)
+
 ttm.lib.math.ExpressionEvaluation = ExpressionEvaluation
