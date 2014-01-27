@@ -362,10 +362,10 @@ There was a problem with the expression</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> expr.size() != <span class="hljs-number">1</span>
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> expr.length != <span class="hljs-number">1</span>
             <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
           <span class="hljs-keyword">else</span>
-            expr.first()
+            _(expr).first()
       });
 
 

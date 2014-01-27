@@ -1832,10 +1832,10 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
           logger.info("before addition", expr);
           expr = ExpressionEvaluationPass.build(expr).perform("addition");
           logger.info("before returning", expr);
-          if (expr.size() !== 1) {
+          if (expr.length !== 1) {
             throw new MalformedExpressionError("Invalid Expression");
           } else {
-            return expr.first();
+            return _(expr).first();
           }
         }
       });

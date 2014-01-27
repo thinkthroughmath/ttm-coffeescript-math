@@ -182,15 +182,16 @@ describe <span class="hljs-string">"Bugs: "</span>,<span class="hljs-function"> 
       )
 
 
-    it <span class="hljs-string">"correctly handles this calc bug case"</span>,<span class="hljs-function"> -&gt;</span>
+    it <span class="hljs-string">"throws a malformed expression error when expression contains an incomplete subexpression"</span>,<span class="hljs-function"> -&gt;</span>
       expr = <span class="hljs-property">@expp</span>()
       expr = <span class="hljs-property">@math</span>.commands.build_append_number({<span class="hljs-attribute">value</span>: <span class="hljs-number">78</span>}).perform(expr)
       expr = <span class="hljs-property">@math</span>.commands.build_append_multiplication().perform(expr)
       expr = <span class="hljs-property">@math</span>.commands.build_append_sub_expression().perform(expr)
-      expr = <span class="hljs-property">@math</span>.commands.build_append_sub_expression().perform(expr)
-      expr = <span class="hljs-property">@math</span>.commands.build_square_root().perform(expr)
+      expect(<span class="hljs-function">-&gt;</span>
+        expr = <span class="hljs-property">@math</span>.commands.build_square_root().perform(expr)
+      ).toThrow()
 
-    it <span class="hljs-string">"correctly handles this equation builder bug case"</span>,<span class="hljs-function"> -&gt;</span>
+    it <span class="hljs-string">"handles this case that was a bug in the equationbuilder"</span>,<span class="hljs-function"> -&gt;</span>
       expr = <span class="hljs-property">@expp</span>()
       expr = <span class="hljs-property">@math</span>.commands.build_append_sub_expression().perform(expr)</pre></div></div>
             
