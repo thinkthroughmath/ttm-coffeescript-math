@@ -602,12 +602,6 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
       });
     };
 
-    Expression.buildError = function(content) {
-      return this.build({
-        is_error: true
-      });
-    };
-
     Expression.buildUnlessExpression = function(content) {
       if (content instanceof this.comps.classes.expression) {
         return content;
@@ -1398,6 +1392,15 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
     return Number.build(opts);
   };
 
+  ExpressionComponentSource.prototype.build_error = function(opts) {
+    if (opts == null) {
+      opts = {};
+    }
+    opts.id || (opts.id = this.id_source.next());
+    opts.is_error = true;
+    return Expression.build(opts);
+  };
+
   ttm.lib.math.ExpressionComponentSource = ttm.class_mixer(ExpressionComponentSource);
 
 }).call(this);
@@ -1873,10 +1876,25 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
     };
 
     ExpressionEvaluation.prototype.resultingExpression = function() {
+      var _this = this;
+      return this.catchMalformedExpressionReturningError(function() {
+        return _this.comps.build_expression({
+          expression: [_this.evaluate()]
+        });
+      });
+    };
+
+    ExpressionEvaluation.prototype.evaluate = function() {
+      var refined;
+      refined = this.refinement.refine(this.expression);
+      return refined["eval"]();
+    };
+
+    ExpressionEvaluation.prototype.catchMalformedExpressionReturningError = function(fn) {
       var e, results;
       results = false;
       try {
-        results = this.evaluate();
+        results = fn();
       } catch (_error) {
         e = _error;
         if (!(e instanceof MalformedExpressionError)) {
@@ -1884,20 +1902,10 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
         }
       }
       if (results) {
-        return this.comps.build_expression({
-          expression: [results]
-        });
+        return results;
       } else {
-        return this.expression.clone({
-          is_error: true
-        });
+        return this.comps.build_error();
       }
-    };
-
-    ExpressionEvaluation.prototype.evaluate = function() {
-      var refined, results;
-      refined = this.refinement.refine(this.expression);
-      return results = refined["eval"]();
     };
 
     return ExpressionEvaluation;
@@ -2081,6 +2089,12 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
       }
     };
 
+    ExpressionManipulation.prototype.catchMalformedExpressionReturningError = function(fn) {
+      return expression_evaluation.build().catchMalformedExpressionReturningError(function() {
+        return fn();
+      });
+    };
+
     ExpressionManipulation.prototype.M = function(expr) {
       this.expr = expr;
       return _ExpressionManipulator.build(this.expr, this.traversal);
@@ -2180,14 +2194,18 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
     }
 
     Square.prototype.perform = function(expression_position) {
-      var new_exp, val;
-      val = this.value(expression_position.expression());
-      new_exp = this.comps.build_expression({
-        expression: [
-          this.comps.build_number({
-            value: val * val
-          })
-        ]
+      var new_exp,
+        _this = this;
+      new_exp = this.catchMalformedExpressionReturningError(function() {
+        var val;
+        val = _this.value(expression_position.expression());
+        return _this.comps.build_expression({
+          expression: [
+            _this.comps.build_number({
+              value: val * val
+            })
+          ]
+        });
       });
       return this.pos.build({
         expression: new_exp,
@@ -2886,31 +2904,31 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
     }
 
     SquareRoot.prototype.perform = function(expression_position) {
-      var expr, root, value;
+      var expr, new_exp,
+        _this = this;
       expr = expression_position.expression();
-      value = this.value(expr);
-      root = Math.sqrt(parseFloat(value));
-      if (!isNaN(root)) {
-        expr = this.comps.build_expression({
-          expression: [
-            this.comps.build_number({
-              value: "" + root
-            })
-          ]
-        });
-        return this.pos.build({
-          expression: expr,
-          position: expr.id()
-        });
-      } else {
-        expr = expr.clone({
-          is_error: true
-        });
-        return this.pos.build({
-          expression: expr,
-          position: expr.id()
-        });
-      }
+      new_exp = this.catchMalformedExpressionReturningError(function() {
+        var root, value;
+        value = _this.value(expr);
+        root = Math.sqrt(parseFloat(value));
+        if (!isNaN(root)) {
+          return _this.comps.build_expression({
+            expression: [
+              _this.comps.build_number({
+                value: "" + root
+              })
+            ]
+          });
+        } else {
+          return expr = expr.clone({
+            is_error: true
+          });
+        }
+      });
+      return this.pos.build({
+        expression: new_exp,
+        position: expr.id()
+      });
     };
 
     return SquareRoot;

@@ -402,21 +402,26 @@ comps = ttm.lib.math.ExpressionComponentSource.build()
     <span class="hljs-property">@refinement</span> = EvaluationRefinementBuilder.build(<span class="hljs-property">@comps</span>, class_mixer, object_refinement, MalformedExpressionError, <span class="hljs-property">@precise</span>).refinement()
 
   <span class="hljs-attribute">resultingExpression</span>:<span class="hljs-function"> -&gt;</span>
-    results = <span class="hljs-literal">false</span>
-    <span class="hljs-keyword">try</span>
-      results = <span class="hljs-property">@evaluate</span>()
-    <span class="hljs-keyword">catch</span> e
-      <span class="hljs-keyword">throw</span> e <span class="hljs-keyword">unless</span> e <span class="hljs-keyword">instanceof</span> MalformedExpressionError
-    <span class="hljs-keyword">if</span> results
-      <span class="hljs-property">@comps</span>.build_expression(<span class="hljs-attribute">expression</span>: [results])
-    <span class="hljs-keyword">else</span>
-      <span class="hljs-property">@expression</span>.clone(<span class="hljs-attribute">is_error</span>: <span class="hljs-literal">true</span>)
+    <span class="hljs-property">@catchMalformedExpressionReturningError</span><span class="hljs-function"> =&gt;</span>
+      <span class="hljs-property">@comps</span>.build_expression(<span class="hljs-attribute">expression</span>: [<span class="hljs-property">@evaluate</span>()])
 
   <span class="hljs-attribute">evaluate</span>: <span class="hljs-function"><span class="hljs-params">()</span>-&gt;</span>
     refined = <span class="hljs-property">@refinement</span>.refine(<span class="hljs-property">@expression</span>)
-    results = refined.eval()
+    refined.eval()
+
+  <span class="hljs-attribute">catchMalformedExpressionReturningError</span>: <span class="hljs-function"><span class="hljs-params">(fn)</span>-&gt;</span>
+    results = <span class="hljs-literal">false</span>
+    <span class="hljs-keyword">try</span>
+      results = fn()
+    <span class="hljs-keyword">catch</span> e
+      <span class="hljs-keyword">throw</span> e <span class="hljs-keyword">unless</span> e <span class="hljs-keyword">instanceof</span> MalformedExpressionError
+    <span class="hljs-keyword">if</span> results
+      results
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-property">@comps</span>.build_error()
 
 class_mixer(ExpressionEvaluation)
+
 ttm.lib.math.ExpressionEvaluation = ExpressionEvaluation</pre></div></div>
             
         </li>

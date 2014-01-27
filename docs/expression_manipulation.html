@@ -158,6 +158,7 @@
 ttm = thinkthroughmath
 class_mixer = ttm.class_mixer
 expression_evaluation = ttm.lib.math.ExpressionEvaluation
+
 object_refinement = ttm.lib.object_refinement</pre></div></div>
             
         </li>
@@ -271,9 +272,14 @@ class_mixer(_ExpressionManipulator)</pre></div></div>
 
   <span class="hljs-attribute">evaluate</span>: <span class="hljs-function"><span class="hljs-params">(exp)</span>-&gt;</span>
     ret = expression_evaluation.build(exp).resultingExpression()
+
   <span class="hljs-attribute">value</span>: <span class="hljs-function"><span class="hljs-params">(exp)</span>-&gt;</span>
     result = expression_evaluation.build(exp).evaluate()
     <span class="hljs-keyword">if</span> result <span class="hljs-keyword">then</span> result.value() <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>
+
+  <span class="hljs-attribute">catchMalformedExpressionReturningError</span>: <span class="hljs-function"><span class="hljs-params">(fn)</span>-&gt;</span>
+    expression_evaluation.build().catchMalformedExpressionReturningError<span class="hljs-function"> -&gt;</span>
+      fn()
 
   <span class="hljs-attribute">M</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@expr</span>)</span>-&gt;</span>
     _ExpressionManipulator.build(<span class="hljs-property">@expr</span>, <span class="hljs-property">@traversal</span>)
@@ -359,8 +365,9 @@ class_mixer(Calculate)
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Square</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ExpressionManipulation</span></span>
   <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
-    val = <span class="hljs-property">@value</span>(expression_position.expression())
-    new_exp = <span class="hljs-property">@comps</span>.build_expression <span class="hljs-attribute">expression</span>: [<span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: val*val)]
+    new_exp = <span class="hljs-property">@catchMalformedExpressionReturningError</span><span class="hljs-function"> =&gt;</span>
+      val = <span class="hljs-property">@value</span>(expression_position.expression())
+      <span class="hljs-property">@comps</span>.build_expression <span class="hljs-attribute">expression</span>: [<span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: val*val)]
     <span class="hljs-property">@pos</span>.build(<span class="hljs-attribute">expression</span>: new_exp, <span class="hljs-attribute">position</span>: new_exp.id())
 
 class_mixer(Square)
@@ -814,14 +821,14 @@ so update to that position</p>
 <span class="hljs-title">class</span> <span class="hljs-title">SquareRoot</span> <span class="hljs-title">extends</span> <span class="hljs-title">ExpressionManipulation</span>
   <span class="hljs-title">perform</span>: <span class="hljs-params">(expression_position)</span>-&gt;</span>
     expr = expression_position.expression()
-    value = <span class="hljs-property">@value</span>(expr)
-    root = Math.sqrt(parseFloat(value))
-    <span class="hljs-keyword">unless</span> isNaN(root)
-      expr = <span class="hljs-property">@comps</span>.build_expression <span class="hljs-attribute">expression</span>: [<span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-string">"<span class="hljs-subst">#{root}</span>"</span>)]
-      <span class="hljs-property">@pos</span>.build(<span class="hljs-attribute">expression</span>: expr, <span class="hljs-attribute">position</span>: expr.id())
-    <span class="hljs-keyword">else</span>
-      expr = expr.clone(<span class="hljs-attribute">is_error</span>: <span class="hljs-literal">true</span>)
-      <span class="hljs-property">@pos</span>.build(<span class="hljs-attribute">expression</span>: expr, <span class="hljs-attribute">position</span>: expr.id())
+    new_exp = <span class="hljs-property">@catchMalformedExpressionReturningError</span><span class="hljs-function"> =&gt;</span>
+      value = <span class="hljs-property">@value</span>(expr)
+      root = Math.sqrt(parseFloat(value))
+      <span class="hljs-keyword">unless</span> isNaN(root)
+        <span class="hljs-property">@comps</span>.build_expression <span class="hljs-attribute">expression</span>: [<span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-string">"<span class="hljs-subst">#{root}</span>"</span>)]
+      <span class="hljs-keyword">else</span>
+        expr = expr.clone(<span class="hljs-attribute">is_error</span>: <span class="hljs-literal">true</span>)
+    <span class="hljs-property">@pos</span>.build(<span class="hljs-attribute">expression</span>: new_exp, <span class="hljs-attribute">position</span>: expr.id())
 
 
 class_mixer(SquareRoot)
