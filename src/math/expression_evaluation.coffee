@@ -175,10 +175,10 @@ class EvaluationRefinementBuilder
 
           # If expression does not contain a single item,
           # There was a problem with the expression
-          if expr.size() != 1
+          if expr.length != 1
             throw new MalformedExpressionError("Invalid Expression")
           else
-            expr.first()
+            _(expr).first()
       });
 
 

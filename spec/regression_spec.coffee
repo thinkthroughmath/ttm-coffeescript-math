@@ -29,18 +29,17 @@ describe "Bugs: ", ->
       )
 
 
-    it "correctly handles this calc bug case", ->
+    it "throws a malformed expression error when expression contains an incomplete subexpression", ->
       expr = @expp()
       expr = @math.commands.build_append_number({value: 78}).perform(expr)
       expr = @math.commands.build_append_multiplication().perform(expr)
       expr = @math.commands.build_append_sub_expression().perform(expr)
-      expr = @math.commands.build_append_sub_expression().perform(expr)
-      expr = @math.commands.build_square_root().perform(expr)
+      expect(->
+        expr = @math.commands.build_square_root().perform(expr)
+      ).toThrow()
 
-    it "correctly handles this equation builder bug case", ->
+    it "handles this case that was a bug in the equationbuilder", ->
       expr = @expp()
       expr = @math.commands.build_append_sub_expression().perform(expr)
       # throws exception
       expr = @math.commands.build_append_addition().perform(expr)
-
-
