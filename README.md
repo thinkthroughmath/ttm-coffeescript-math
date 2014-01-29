@@ -1,15 +1,17 @@
 # TTM Coffeescript Math
 
 (todo change to sliderule)
+### Initial Setup
+
+    npm install
+
+### To serve library in a browser
+
+    grunt serve
 
 
-## to serve library in a browser
+### To run tests
 
-grunt serve
-
-
-## to run tests
-
-grunt test
+    grunt test
 
 
