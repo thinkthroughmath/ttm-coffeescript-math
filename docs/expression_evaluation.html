@@ -220,6 +220,19 @@ when they are needed.</p>
             <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
       });
 
+    refinement.forType(comps.classes.root,
+      {
+        <span class="hljs-attribute">eval</span>: <span class="hljs-function"><span class="hljs-params">(evaluation, pass)</span>-&gt;</span>
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">if</span> pass != <span class="hljs-string">"exponentiation"</span>
+          <span class="hljs-keyword">if</span> <span class="hljs-property">@degree</span>()? &amp;&amp; <span class="hljs-property">@radicand</span>()?
+            degree = refinement.refine(<span class="hljs-property">@degree</span>()).eval().toCalculable()
+            radicand = refinement.refine(<span class="hljs-property">@radicand</span>()).eval().toCalculable()
+            ttm.logger.info(<span class="hljs-string">"root"</span>, degree, radicand)
+            comps.classes.number.build(<span class="hljs-attribute">value</span>: Math.pow(radicand, <span class="hljs-number">1</span> / degree))
+          <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> MalformedExpressionError(<span class="hljs-string">"Invalid Expression"</span>)
+      });
+
     refinement.forType(comps.classes.pi,
       {
         <span class="hljs-attribute">eval</span>:<span class="hljs-function"> -&gt;</span>

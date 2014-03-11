@@ -1679,6 +1679,24 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
           }
         }
       });
+      refinement.forType(comps.classes.root, {
+        "eval": function(evaluation, pass) {
+          var degree, radicand;
+          if (pass !== "exponentiation") {
+            return;
+          }
+          if ((this.degree() != null) && (this.radicand() != null)) {
+            degree = refinement.refine(this.degree())["eval"]().toCalculable();
+            radicand = refinement.refine(this.radicand())["eval"]().toCalculable();
+            ttm.logger.info("root", degree, radicand);
+            return comps.classes.number.build({
+              value: Math.pow(radicand, 1 / degree)
+            });
+          } else {
+            throw new MalformedExpressionError("Invalid Expression");
+          }
+        }
+      });
       refinement.forType(comps.classes.pi, {
         "eval": function() {
           return comps.classes.number.build({

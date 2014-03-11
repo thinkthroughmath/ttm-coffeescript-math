@@ -194,6 +194,18 @@ describe <span class="hljs-string">"math expression evaluation"</span>,<span cla
       <span class="hljs-string">'8'</span>
     )
 
+  it <span class="hljs-string">"evaluates simple square root"</span>,<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@expect_evaluation</span>(
+      [{<span class="hljs-attribute">root</span>: [<span class="hljs-string">'2'</span>, <span class="hljs-string">'64'</span>]}],
+      <span class="hljs-string">'8'</span>
+    )
+
+  it <span class="hljs-string">"evaluates a complex root"</span>,<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@expect_evaluation</span>(
+      [{<span class="hljs-attribute">root</span>: [<span class="hljs-string">'2'</span>, [<span class="hljs-string">'61'</span>, <span class="hljs-string">'+'</span>, <span class="hljs-string">'3'</span>]]}],
+      <span class="hljs-string">'8'</span>
+    )
+
   it <span class="hljs-string">"evaluates fractional division"</span>,<span class="hljs-function"> -&gt;</span>
     <span class="hljs-property">@expect_evaluation</span>(
       {<span class="hljs-attribute">fraction</span>: [<span class="hljs-string">'20'</span>, <span class="hljs-string">'2.5'</span>]},
