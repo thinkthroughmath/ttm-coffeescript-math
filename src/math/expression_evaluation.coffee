@@ -45,6 +45,19 @@ class EvaluationRefinementBuilder
             throw new MalformedExpressionError("Invalid Expression")
       });
 
+    refinement.forType(comps.classes.root,
+      {
+        eval: (evaluation, pass)->
+          return if pass != "exponentiation"
+          if @degree()? && @radicand()?
+            degree = refinement.refine(@degree()).eval().toCalculable()
+            radicand = refinement.refine(@radicand()).eval().toCalculable()
+            ttm.logger.info("root", degree, radicand)
+            comps.classes.number.build(value: Math.pow(radicand, 1 / degree))
+          else
+            throw new MalformedExpressionError("Invalid Expression")
+      });
+
     refinement.forType(comps.classes.pi,
       {
         eval: ->

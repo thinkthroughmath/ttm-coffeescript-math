@@ -41,6 +41,18 @@ describe "math expression evaluation", ->
       '8'
     )
 
+  it "evaluates simple square root", ->
+    @expect_evaluation(
+      [{root: ['2', '64']}],
+      '8'
+    )
+
+  it "evaluates a complex root", ->
+    @expect_evaluation(
+      [{root: ['2', ['61', '+', '3']]}],
+      '8'
+    )
+
   it "evaluates fractional division", ->
     @expect_evaluation(
       {fraction: ['20', '2.5']},
