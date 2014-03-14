@@ -666,12 +666,8 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
       return _(this.expression).size();
     };
 
-    Expression.prototype.isBlank = function() {
-      return this.size() === 0;
-    };
-
     Expression.prototype.isEmpty = function() {
-      return this.isBlank();
+      return this.size() === 0;
     };
 
     Expression.prototype.set = function(expression) {
