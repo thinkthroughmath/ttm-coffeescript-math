@@ -83,10 +83,8 @@ class Expression extends ExpressionComponent
   size: ->
     _(@expression).size();
 
-  isBlank: ->
+  isEmpty: ->
     @size() == 0
-
-  isEmpty: -> @isBlank()
 
   set: (expression)->
     @expression = expression
