@@ -3530,6 +3530,18 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
       return found_equals;
     };
 
+    ExpressionTraversal.prototype.numberOfEquals = function() {
+      var count,
+        _this = this;
+      count = 0;
+      this.each(function(exp) {
+        if (exp instanceof _this.expr_classes.equals) {
+          return count += 1;
+        }
+      });
+      return count;
+    };
+
     ExpressionTraversal.prototype.hasVariableNamed = function(name) {
       var found_equals,
         _this = this;

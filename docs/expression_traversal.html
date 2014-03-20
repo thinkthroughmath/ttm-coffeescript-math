@@ -175,6 +175,12 @@
       found_equals = <span class="hljs-literal">true</span> <span class="hljs-keyword">if</span> exp <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@expr_classes</span>.equals
     found_equals
 
+  <span class="hljs-attribute">numberOfEquals</span>:<span class="hljs-function"> -&gt;</span>
+    count = <span class="hljs-number">0</span>
+    <span class="hljs-property">@each</span> <span class="hljs-function"><span class="hljs-params">(exp)</span>=&gt;</span>
+      count += <span class="hljs-number">1</span> <span class="hljs-keyword">if</span> exp <span class="hljs-keyword">instanceof</span> <span class="hljs-property">@expr_classes</span>.equals
+    count
+
   <span class="hljs-attribute">hasVariableNamed</span>: <span class="hljs-function"><span class="hljs-params">(name)</span>-&gt;</span>
     found_equals = <span class="hljs-literal">false</span>
     <span class="hljs-property">@each</span> <span class="hljs-function"><span class="hljs-params">(exp)</span>=&gt;</span>

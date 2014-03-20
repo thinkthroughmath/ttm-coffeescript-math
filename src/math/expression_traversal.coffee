@@ -22,6 +22,12 @@ class ExpressionTraversal
       found_equals = true if exp instanceof @expr_classes.equals
     found_equals
 
+  numberOfEquals: ->
+    count = 0
+    @each (exp)=>
+      count += 1 if exp instanceof @expr_classes.equals
+    count
+
   hasVariableNamed: (name)->
     found_equals = false
     @each (exp)=>

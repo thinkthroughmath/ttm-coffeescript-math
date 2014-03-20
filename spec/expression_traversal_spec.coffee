@@ -34,3 +34,24 @@ describe "expression traversal", ->
       wrapping_exp = exp_pos.expression()
       expect(contains_decider.isCursorWithinComponent(wrapping_exp)).toEqual true
 
+  describe "equals sign stuff", ->
+    it "knows if there is no equals sign", ->
+      exp_pos   = @exp_pos_builder([])
+      traversal = @expression_traversal.build(exp_pos)
+
+      expect(traversal.hasEquals()).toBeFalsy()
+      expect(traversal.numberOfEquals()).toBe(0)
+
+    it "knows if there is an equals sign", ->
+      exp_pos   = @exp_pos_builder(['='])
+      traversal = @expression_traversal.build(exp_pos)
+
+      expect(traversal.hasEquals()).toBeTruthy()
+      expect(traversal.numberOfEquals()).toBe(1)
+
+    it "can count more than one equals sign", ->
+      exp_pos   = @exp_pos_builder(['=', '='])
+      traversal = @expression_traversal.build(exp_pos)
+
+      expect(traversal.hasEquals()).toBeTruthy()
+      expect(traversal.numberOfEquals()).toBe(2)

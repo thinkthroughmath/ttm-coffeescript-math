@@ -185,7 +185,29 @@ describe <span class="hljs-string">"expression traversal"</span>,<span class="hl
 
       contains_decider = contains_decider.buildExpressionComponentContainsCursor()
       wrapping_exp = exp_pos.expression()
-      expect(contains_decider.isCursorWithinComponent(wrapping_exp)).toEqual <span class="hljs-literal">true</span></pre></div></div>
+      expect(contains_decider.isCursorWithinComponent(wrapping_exp)).toEqual <span class="hljs-literal">true</span>
+
+  describe <span class="hljs-string">"equals sign stuff"</span>,<span class="hljs-function"> -&gt;</span>
+    it <span class="hljs-string">"knows if there is no equals sign"</span>,<span class="hljs-function"> -&gt;</span>
+      exp_pos   = <span class="hljs-property">@exp_pos_builder</span>([])
+      traversal = <span class="hljs-property">@expression_traversal</span>.build(exp_pos)
+
+      expect(traversal.hasEquals()).toBeFalsy()
+      expect(traversal.numberOfEquals()).toBe(<span class="hljs-number">0</span>)
+
+    it <span class="hljs-string">"knows if there is an equals sign"</span>,<span class="hljs-function"> -&gt;</span>
+      exp_pos   = <span class="hljs-property">@exp_pos_builder</span>([<span class="hljs-string">'='</span>])
+      traversal = <span class="hljs-property">@expression_traversal</span>.build(exp_pos)
+
+      expect(traversal.hasEquals()).toBeTruthy()
+      expect(traversal.numberOfEquals()).toBe(<span class="hljs-number">1</span>)
+
+    it <span class="hljs-string">"can count more than one equals sign"</span>,<span class="hljs-function"> -&gt;</span>
+      exp_pos   = <span class="hljs-property">@exp_pos_builder</span>([<span class="hljs-string">'='</span>, <span class="hljs-string">'='</span>])
+      traversal = <span class="hljs-property">@expression_traversal</span>.build(exp_pos)
+
+      expect(traversal.hasEquals()).toBeTruthy()
+      expect(traversal.numberOfEquals()).toBe(<span class="hljs-number">2</span>)</pre></div></div>
             
         </li>
         
