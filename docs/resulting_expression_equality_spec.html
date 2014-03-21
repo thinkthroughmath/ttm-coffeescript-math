@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>precise.coffee</title>
+  <title>resulting_expression_equality_spec.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -146,7 +146,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>precise.coffee</h1>
+                  <h1>resulting_expression_equality_spec.coffee</h1>
               </div>
           </li>
         
@@ -158,103 +158,44 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <p>a really simple library for
-doing “precise” js math</p>
-<p>tactic
-limits the max value of numbers
-but makes floats precise, which is what we want.</p>
+              <p>= require lib/math/expression_components
+= require lib/math/resulting_expression_equality</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>
-
 ttm = thinkthroughmath
 
+describe <span class="hljs-string">"expression equality"</span>,<span class="hljs-function"> -&gt;</span>
+  beforeEach<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@comps</span> = ttm.lib.math.ExpressionComponentSource.build()
+    <span class="hljs-property">@isEqual</span> = ttm.lib.math.ResultingExpressionEquality.isEqual
+    builder_lib = ttm.lib.math.BuildExpressionFromJavascriptObject
 
-factor = <span class="hljs-number">10000000</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Precise</span></span>
-  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@adjustment_factor</span>=factor)</span>-&gt;</span>
+    <span class="hljs-property">@math</span> = ttm.lib.math.math_lib.build()
+    <span class="hljs-property">@exp_builder</span> = <span class="hljs-property">@math</span>.object_to_expression.buildExpressionFunction()
 
-  <span class="hljs-attribute">convertInternal</span>: <span class="hljs-function"><span class="hljs-params">(val)</span>-&gt;</span>
-    parseInt((parseFloat(val) * <span class="hljs-property">@adjustment_factor</span>).toFixed())
+  describe <span class="hljs-string">"numbers"</span>,<span class="hljs-function"> -&gt;</span>
+    it <span class="hljs-string">"with different values are different"</span>,<span class="hljs-function"> -&gt;</span>
+      expect(
+        <span class="hljs-property">@isEqual</span>(
+          <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">10</span>),
+          <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">11</span>)
+        )).toEqual <span class="hljs-literal">false</span>
 
-  <span class="hljs-attribute">convertExternal</span>: <span class="hljs-function"><span class="hljs-params">(val)</span>-&gt;</span>
-    <span class="hljs-string">"<span class="hljs-subst">#{val / <span class="hljs-property">@adjustment_factor</span>}</span>"</span>
+    it <span class="hljs-string">"is equal with two of the same value"</span>,<span class="hljs-function"> -&gt;</span>
+      expect(
+        <span class="hljs-property">@isEqual</span>(
+          <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">10</span>),
+          <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">10</span>)
+        )).toEqual <span class="hljs-literal">true</span>
 
-  <span class="hljs-attribute">convertExternal2</span>: <span class="hljs-function"><span class="hljs-params">(val)</span>-&gt;</span>
-    <span class="hljs-string">"<span class="hljs-subst">#{val / (<span class="hljs-property">@adjustment_factor</span> * <span class="hljs-property">@adjustment_factor</span>)}</span>"</span>
-
-  <span class="hljs-attribute">sub</span>: <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-    <span class="hljs-property">@wc</span> a, b, <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-      a - b
-  <span class="hljs-attribute">add</span>: <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-    <span class="hljs-property">@wc</span> a, b, <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-      a + b
-
-  <span class="hljs-attribute">mul</span>: <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-    <span class="hljs-property">@wc2</span> a, b, <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-      a * b
-
-  <span class="hljs-attribute">div</span>: <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-    <span class="hljs-property">@wc0</span> a, b, <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-      a / b</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-2">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-2">&#182;</a>
-              </div>
-              <p>with conversions</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">wc</span>: <span class="hljs-function"><span class="hljs-params">(a, b, fn)</span>-&gt;</span>
-    ac = <span class="hljs-property">@convertInternal</span>(a)
-    bc = <span class="hljs-property">@convertInternal</span>(b)
-    <span class="hljs-property">@convertExternal</span>(fn(ac, bc))</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-3">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
-              </div>
-              <p>with conversions 2, contains factor squared</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">wc2</span>: <span class="hljs-function"><span class="hljs-params">(a, b, fn)</span>-&gt;</span>
-    ac = <span class="hljs-property">@convertInternal</span>(a)
-    bc = <span class="hljs-property">@convertInternal</span>(b)
-    <span class="hljs-property">@convertExternal2</span>(fn(ac, bc))</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-4">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
-              </div>
-              <p>with conversions 0, does not need any dividing to convert back</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">wc0</span>: <span class="hljs-function"><span class="hljs-params">(a, b, fn)</span>-&gt;</span>
-    ac = <span class="hljs-property">@convertInternal</span>(a)
-    bc = <span class="hljs-property">@convertInternal</span>(b)
-    <span class="hljs-string">"<span class="hljs-subst">#{fn(ac, bc)}</span>"</span>
-
-
-ttm.lib.math.Precise = ttm.class_mixer Precise</pre></div></div>
+    it <span class="hljs-string">"is not rounded"</span>,<span class="hljs-function"> -&gt;</span>
+      expect(
+        <span class="hljs-property">@isEqual</span>(
+          <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">10.111</span>),
+          <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">10.11</span>)
+        )).toEqual <span class="hljs-literal">false</span></pre></div></div>
             
         </li>
         

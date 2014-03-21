@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>precise.coffee</title>
+  <title>resulting_expression_equality.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -146,7 +146,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>precise.coffee</h1>
+                  <h1>resulting_expression_equality.coffee</h1>
               </div>
           </li>
         
@@ -158,46 +158,33 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <p>a really simple library for
-doing “precise” js math</p>
-<p>tactic
-limits the max value of numbers
-but makes floats precise, which is what we want.</p>
+              <p>= require ./base
+= require lib
+= require lib/math/expression_components</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>
-
 ttm = thinkthroughmath
+class_mixer = ttm.class_mixer
+object_refinement = ttm.lib.object_refinement
 
+ref = object_refinement.build()
+comps = ttm.lib.math.ExpressionComponentSource.build()
 
-factor = <span class="hljs-number">10000000</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Precise</span></span>
-  <span class="hljs-attribute">initialize</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@adjustment_factor</span>=factor)</span>-&gt;</span>
-
-  <span class="hljs-attribute">convertInternal</span>: <span class="hljs-function"><span class="hljs-params">(val)</span>-&gt;</span>
-    parseInt((parseFloat(val) * <span class="hljs-property">@adjustment_factor</span>).toFixed())
-
-  <span class="hljs-attribute">convertExternal</span>: <span class="hljs-function"><span class="hljs-params">(val)</span>-&gt;</span>
-    <span class="hljs-string">"<span class="hljs-subst">#{val / <span class="hljs-property">@adjustment_factor</span>}</span>"</span>
-
-  <span class="hljs-attribute">convertExternal2</span>: <span class="hljs-function"><span class="hljs-params">(val)</span>-&gt;</span>
-    <span class="hljs-string">"<span class="hljs-subst">#{val / (<span class="hljs-property">@adjustment_factor</span> * <span class="hljs-property">@adjustment_factor</span>)}</span>"</span>
-
-  <span class="hljs-attribute">sub</span>: <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-    <span class="hljs-property">@wc</span> a, b, <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-      a - b
-  <span class="hljs-attribute">add</span>: <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-    <span class="hljs-property">@wc</span> a, b, <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-      a + b
-
-  <span class="hljs-attribute">mul</span>: <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-    <span class="hljs-property">@wc2</span> a, b, <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-      a * b
-
-  <span class="hljs-attribute">div</span>: <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-    <span class="hljs-property">@wc0</span> a, b, <span class="hljs-function"><span class="hljs-params">(a, b)</span>-&gt;</span>
-      a / b</pre></div></div>
+<span class="hljs-function"><span class="hljs-title">buildIsEqual</span> = <span class="hljs-params">(for_type, additional_method=<span class="hljs-literal">false</span>)</span>-&gt;</span>
+  <span class="hljs-function"><span class="hljs-title">isEqualFunction</span> = <span class="hljs-params">(other, eq_calc)</span>-&gt;</span>
+    same_type = (other <span class="hljs-keyword">instanceof</span> for_type)
+    eq_calc.saveFalseForReport(same_type, <span class="hljs-property">@unrefined</span>(), other,
+      <span class="hljs-string">"different types <span class="hljs-subst">#{for_type.name}</span>"</span>)
+    <span class="hljs-keyword">if</span> same_type
+      <span class="hljs-keyword">if</span> additional_method
+        @[additional_method](other, eq_calc)
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-literal">true</span>
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-literal">false</span>
+  ttm.logger.instrument(<span class="hljs-attribute">name</span>: <span class="hljs-string">"buildIsEqual function"</span>, <span class="hljs-attribute">fn</span>: isEqualFunction)</pre></div></div>
             
         </li>
         
@@ -208,14 +195,13 @@ factor = <span class="hljs-number">10000000</span>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>with conversions</p>
+              <p>Blank</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">wc</span>: <span class="hljs-function"><span class="hljs-params">(a, b, fn)</span>-&gt;</span>
-    ac = <span class="hljs-property">@convertInternal</span>(a)
-    bc = <span class="hljs-property">@convertInternal</span>(b)
-    <span class="hljs-property">@convertExternal</span>(fn(ac, bc))</pre></div></div>
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.blank, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.blank))
+  })</pre></div></div>
             
         </li>
         
@@ -226,35 +212,56 @@ factor = <span class="hljs-number">10000000</span>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>with conversions 2, contains factor squared</p>
+              <p>Number</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">wc2</span>: <span class="hljs-function"><span class="hljs-params">(a, b, fn)</span>-&gt;</span>
-    ac = <span class="hljs-property">@convertInternal</span>(a)
-    bc = <span class="hljs-property">@convertInternal</span>(b)
-    <span class="hljs-property">@convertExternal2</span>(fn(ac, bc))</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-4">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
-              </div>
-              <p>with conversions 0, does not need any dividing to convert back</p>
+            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.number, {
+  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.number, <span class="hljs-string">"checkNumberValues"</span>)),
+  <span class="hljs-attribute">checkNumberValues</span>: <span class="hljs-function"><span class="hljs-params">(other, eq_calc)</span>-&gt;</span>
 
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">wc0</span>: <span class="hljs-function"><span class="hljs-params">(a, b, fn)</span>-&gt;</span>
-    ac = <span class="hljs-property">@convertInternal</span>(a)
-    bc = <span class="hljs-property">@convertInternal</span>(b)
-    <span class="hljs-string">"<span class="hljs-subst">#{fn(ac, bc)}</span>"</span>
+    check = parseFloat(<span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@value</span>()}</span>"</span>) == parseFloat(<span class="hljs-string">"<span class="hljs-subst">#{other.value()}</span>"</span>)
+    eq_calc.saveFalseForReport(check, <span class="hljs-property">@unrefined</span>(), other, <span class="hljs-string">"Numeric values not equal"</span>)
+})
 
+ref.forDefault({
+  <span class="hljs-attribute">isEqual</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-keyword">throw</span> [<span class="hljs-string">"Unimplemented equality refinement for "</span>, <span class="hljs-property">@unrefined</span>()]
+})
 
-ttm.lib.math.Precise = ttm.class_mixer Precise</pre></div></div>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ResultingExpressionEquality</span></span>
+  <span class="hljs-attribute">initialize</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@report_saved</span> = <span class="hljs-literal">false</span>
+
+  <span class="hljs-attribute">calculate</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@first</span>, <span class="hljs-property">@second</span>)</span>-&gt;</span>
+    firstp = ref.refine <span class="hljs-property">@first</span>
+    <span class="hljs-property">@_equality_results</span> = firstp.isEqual <span class="hljs-property">@second</span>, @
+    @
+
+  <span class="hljs-attribute">isEqual</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@_equality_results</span>
+
+  <span class="hljs-attribute">notEqualReport</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@a</span>, <span class="hljs-property">@b</span>, <span class="hljs-property">@not_eql_msg</span>)</span>-&gt;</span>
+    <span class="hljs-property">@report_saved</span> = <span class="hljs-literal">true</span>
+
+  <span class="hljs-attribute">saveFalseForReport</span>: <span class="hljs-function"><span class="hljs-params">(value, a, b, msg)</span>-&gt;</span>
+    <span class="hljs-keyword">if</span> value
+      <span class="hljs-literal">true</span>
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-property">@notEqualReport</span>(a, b, msg) <span class="hljs-keyword">unless</span> <span class="hljs-property">@report_saved</span>
+      <span class="hljs-literal">false</span>
+
+class_mixer ResultingExpressionEquality
+
+ResultingExpressionEquality.<span class="hljs-function"><span class="hljs-title">isEqual</span> = <span class="hljs-params">(a,b)</span>-&gt;</span>
+  ResultingExpressionEquality.build().calculate(a,b).isEqual()
+
+ResultingExpressionEquality.<span class="hljs-function"><span class="hljs-title">equalityCalculation</span> = <span class="hljs-params">(a,b)</span>-&gt;</span>
+  ec = ResultingExpressionEquality.build()
+  ec.calculate(a,b)
+  ec
+
+ttm.lib.math.ResultingExpressionEquality = ResultingExpressionEquality</pre></div></div>
             
         </li>
         

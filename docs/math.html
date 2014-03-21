@@ -69,6 +69,11 @@
               </a>
             
               
+              <a class="source" href="resulting_expression_equality_spec.html">
+                resulting_expression_equality_spec.coffee
+              </a>
+            
+              
               <a class="source" href="spec_helpers.html">
                 spec_helpers.coffee
               </a>
@@ -126,6 +131,11 @@
               
               <a class="source" href="precise.html">
                 precise.coffee
+              </a>
+            
+              
+              <a class="source" href="resulting_expression_equality.html">
+                resulting_expression_equality.coffee
               </a>
             
           </div>
@@ -249,6 +259,7 @@ ttm.lib.math ||= {}</pre></div></div>
 <span class="hljs-built_in">require</span> <span class="hljs-string">'./math/precise'</span>
 <span class="hljs-built_in">require</span> <span class="hljs-string">'./math/expression_components'</span>
 <span class="hljs-built_in">require</span> <span class="hljs-string">'./math/expression_equality'</span>
+<span class="hljs-built_in">require</span> <span class="hljs-string">'./math/resulting_expression_equality'</span>
 <span class="hljs-built_in">require</span> <span class="hljs-string">'./math/expression_evaluation'</span>
 <span class="hljs-built_in">require</span> <span class="hljs-string">'./math/expression_manipulation'</span>
 <span class="hljs-built_in">require</span> <span class="hljs-string">'./math/expression_position'</span>
@@ -519,6 +530,22 @@ converting it into another expression</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Resulting expression equality is used to determine if the numerical
+result of an expression is considered equal, without rounding</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@resulting_expression_equality</span> = opts.resulting_expression_equality || ttm.lib.math.ResultingExpressionEquality</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>Export the math library class</p>
 
