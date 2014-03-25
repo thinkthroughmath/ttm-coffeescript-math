@@ -168,34 +168,20 @@ ttm = thinkthroughmath
 
 describe <span class="hljs-string">"expression equality"</span>,<span class="hljs-function"> -&gt;</span>
   beforeEach<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@comps</span> = ttm.lib.math.ExpressionComponentSource.build()
     <span class="hljs-property">@isEqual</span> = ttm.lib.math.ResultingExpressionEquality.isEqual
-    builder_lib = ttm.lib.math.BuildExpressionFromJavascriptObject
-
-    <span class="hljs-property">@math</span> = ttm.lib.math.math_lib.build()
-    <span class="hljs-property">@exp_builder</span> = <span class="hljs-property">@math</span>.object_to_expression.buildExpressionFunction()
 
   describe <span class="hljs-string">"numbers"</span>,<span class="hljs-function"> -&gt;</span>
     it <span class="hljs-string">"with different values are different"</span>,<span class="hljs-function"> -&gt;</span>
-      expect(
-        <span class="hljs-property">@isEqual</span>(
-          <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">10</span>),
-          <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">11</span>)
-        )).toEqual <span class="hljs-literal">false</span>
+      expect(<span class="hljs-property">@isEqual</span>(<span class="hljs-number">10</span>, <span class="hljs-number">11</span>)).toEqual <span class="hljs-literal">false</span>
 
     it <span class="hljs-string">"is equal with two of the same value"</span>,<span class="hljs-function"> -&gt;</span>
-      expect(
-        <span class="hljs-property">@isEqual</span>(
-          <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">10</span>),
-          <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">10</span>)
-        )).toEqual <span class="hljs-literal">true</span>
+      expect(<span class="hljs-property">@isEqual</span>(<span class="hljs-number">10</span>, <span class="hljs-number">10</span>)).toEqual <span class="hljs-literal">true</span>
 
     it <span class="hljs-string">"is not rounded"</span>,<span class="hljs-function"> -&gt;</span>
-      expect(
-        <span class="hljs-property">@isEqual</span>(
-          <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">10.111</span>),
-          <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">10.11</span>)
-        )).toEqual <span class="hljs-literal">false</span></pre></div></div>
+      expect(<span class="hljs-property">@isEqual</span>(<span class="hljs-number">10.111</span>, <span class="hljs-number">10.11</span>)).toEqual <span class="hljs-literal">false</span>
+
+    it <span class="hljs-string">"ignores trailing 0s"</span>,<span class="hljs-function"> -&gt;</span>
+      expect(<span class="hljs-property">@isEqual</span>(<span class="hljs-number">8</span>, <span class="hljs-number">8.00</span>)).toEqual <span class="hljs-literal">true</span></pre></div></div>
             
         </li>
         

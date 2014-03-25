@@ -3709,61 +3709,13 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
 
 },{}],12:[function(require,module,exports){
 (function() {
-  var ResultingExpressionEquality, buildIsEqual, class_mixer, comps, object_refinement, ref, ttm;
+  var ResultingExpressionEquality, class_mixer, object_refinement, ttm;
 
   ttm = thinkthroughmath;
 
   class_mixer = ttm.class_mixer;
 
   object_refinement = ttm.lib.object_refinement;
-
-  ref = object_refinement.build();
-
-  comps = ttm.lib.math.ExpressionComponentSource.build();
-
-  buildIsEqual = function(for_type, additional_method) {
-    var isEqualFunction;
-    if (additional_method == null) {
-      additional_method = false;
-    }
-    isEqualFunction = function(other, eq_calc) {
-      var same_type;
-      same_type = other instanceof for_type;
-      eq_calc.saveFalseForReport(same_type, this.unrefined(), other, "different types " + for_type.name);
-      if (same_type) {
-        if (additional_method) {
-          return this[additional_method](other, eq_calc);
-        } else {
-          return true;
-        }
-      } else {
-        return false;
-      }
-    };
-    return ttm.logger.instrument({
-      name: "buildIsEqual function",
-      fn: isEqualFunction
-    });
-  };
-
-  ref.forType(comps.classes.blank, {
-    isEqual: buildIsEqual(comps.classes.blank)
-  });
-
-  ref.forType(comps.classes.number, {
-    isEqual: buildIsEqual(comps.classes.number, "checkNumberValues"),
-    checkNumberValues: function(other, eq_calc) {
-      var check;
-      check = parseFloat("" + (this.value())) === parseFloat("" + (other.value()));
-      return eq_calc.saveFalseForReport(check, this.unrefined(), other, "Numeric values not equal");
-    }
-  });
-
-  ref.forDefault({
-    isEqual: function() {
-      throw ["Unimplemented equality refinement for ", this.unrefined()];
-    }
-  });
 
   ResultingExpressionEquality = (function() {
     function ResultingExpressionEquality() {}
@@ -3773,11 +3725,9 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
     };
 
     ResultingExpressionEquality.prototype.calculate = function(first, second) {
-      var firstp;
       this.first = first;
       this.second = second;
-      firstp = ref.refine(this.first);
-      this._equality_results = firstp.isEqual(this.second, this);
+      this._equality_results = this.first === this.second;
       return this;
     };
 

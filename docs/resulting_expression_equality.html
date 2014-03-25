@@ -169,73 +169,12 @@ ttm = thinkthroughmath
 class_mixer = ttm.class_mixer
 object_refinement = ttm.lib.object_refinement
 
-ref = object_refinement.build()
-comps = ttm.lib.math.ExpressionComponentSource.build()
-
-<span class="hljs-function"><span class="hljs-title">buildIsEqual</span> = <span class="hljs-params">(for_type, additional_method=<span class="hljs-literal">false</span>)</span>-&gt;</span>
-  <span class="hljs-function"><span class="hljs-title">isEqualFunction</span> = <span class="hljs-params">(other, eq_calc)</span>-&gt;</span>
-    same_type = (other <span class="hljs-keyword">instanceof</span> for_type)
-    eq_calc.saveFalseForReport(same_type, <span class="hljs-property">@unrefined</span>(), other,
-      <span class="hljs-string">"different types <span class="hljs-subst">#{for_type.name}</span>"</span>)
-    <span class="hljs-keyword">if</span> same_type
-      <span class="hljs-keyword">if</span> additional_method
-        @[additional_method](other, eq_calc)
-      <span class="hljs-keyword">else</span>
-        <span class="hljs-literal">true</span>
-    <span class="hljs-keyword">else</span>
-      <span class="hljs-literal">false</span>
-  ttm.logger.instrument(<span class="hljs-attribute">name</span>: <span class="hljs-string">"buildIsEqual function"</span>, <span class="hljs-attribute">fn</span>: isEqualFunction)</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-2">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-2">&#182;</a>
-              </div>
-              <p>Blank</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.blank, {
-  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.blank))
-  })</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-3">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
-              </div>
-              <p>Number</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>ref.forType(comps.classes.number, {
-  <span class="hljs-attribute">isEqual</span>: (buildIsEqual(comps.classes.number, <span class="hljs-string">"checkNumberValues"</span>)),
-  <span class="hljs-attribute">checkNumberValues</span>: <span class="hljs-function"><span class="hljs-params">(other, eq_calc)</span>-&gt;</span>
-
-    check = parseFloat(<span class="hljs-string">"<span class="hljs-subst">#{<span class="hljs-property">@value</span>()}</span>"</span>) == parseFloat(<span class="hljs-string">"<span class="hljs-subst">#{other.value()}</span>"</span>)
-    eq_calc.saveFalseForReport(check, <span class="hljs-property">@unrefined</span>(), other, <span class="hljs-string">"Numeric values not equal"</span>)
-})
-
-ref.forDefault({
-  <span class="hljs-attribute">isEqual</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-keyword">throw</span> [<span class="hljs-string">"Unimplemented equality refinement for "</span>, <span class="hljs-property">@unrefined</span>()]
-})
-
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ResultingExpressionEquality</span></span>
   <span class="hljs-attribute">initialize</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-property">@report_saved</span> = <span class="hljs-literal">false</span>
 
   <span class="hljs-attribute">calculate</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@first</span>, <span class="hljs-property">@second</span>)</span>-&gt;</span>
-    firstp = ref.refine <span class="hljs-property">@first</span>
-    <span class="hljs-property">@_equality_results</span> = firstp.isEqual <span class="hljs-property">@second</span>, @
+    <span class="hljs-property">@_equality_results</span> = <span class="hljs-property">@first</span> == <span class="hljs-property">@second</span>
     @
 
   <span class="hljs-attribute">isEqual</span>:<span class="hljs-function"> -&gt;</span>
