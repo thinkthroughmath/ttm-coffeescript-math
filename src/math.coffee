@@ -29,6 +29,7 @@ ttm.lib.math ||= {}
 require './math/precise'
 require './math/expression_components'
 require './math/expression_equality'
+require './math/resulting_expression_equality'
 require './math/expression_evaluation'
 require './math/expression_manipulation'
 require './math/expression_position'
@@ -120,6 +121,10 @@ class MathLib
 
     # Expression equality is used to determine if an expression is considered equal
     @expression_equality = opts.expression_equality || ttm.lib.math.ExpressionEquality
+
+    # Resulting expression equality is used to determine if the numerical
+    # result of an expression is considered equal, without rounding
+    @resulting_expression_equality = opts.resulting_expression_equality || ttm.lib.math.ResultingExpressionEquality
 
 
 # Export the math library class

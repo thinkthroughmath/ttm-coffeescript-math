@@ -26,6 +26,8 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
 
   require('./math/expression_equality');
 
+  require('./math/resulting_expression_equality');
+
   require('./math/expression_evaluation');
 
   require('./math/expression_manipulation');
@@ -58,7 +60,8 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
         component_builder: this.components
       });
       this.evaluation = opts.evaluation || ttm.lib.math.ExpressionEvaluation;
-      return this.expression_equality = opts.expression_equality || ttm.lib.math.ExpressionEquality;
+      this.expression_equality = opts.expression_equality || ttm.lib.math.ExpressionEquality;
+      return this.resulting_expression_equality = opts.resulting_expression_equality || ttm.lib.math.ResultingExpressionEquality;
     };
 
     return MathLib;
@@ -69,7 +72,7 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
 
 }).call(this);
 
-},{"./math/build_expression_from_javascript_object":3,"./math/expression_components":4,"./math/expression_equality":5,"./math/expression_evaluation":6,"./math/expression_manipulation":7,"./math/expression_position":8,"./math/expression_to_string":9,"./math/expression_traversal":10,"./math/precise":11}],3:[function(require,module,exports){
+},{"./math/build_expression_from_javascript_object":3,"./math/expression_components":4,"./math/expression_equality":5,"./math/expression_evaluation":6,"./math/expression_manipulation":7,"./math/expression_position":8,"./math/expression_to_string":9,"./math/expression_traversal":10,"./math/precise":11,"./math/resulting_expression_equality":12}],3:[function(require,module,exports){
 (function() {
   var BuildExpressionFromJavascriptObject, ConversionProcess, class_mixer, convert_implicit_subexp, logger, ttm, _FromClosedExpressionObject, _FromExponentiationObject, _FromFnObject, _FromFractionObject, _FromNumberObject, _FromRootObject, _FromStringLiteralObject, _FromVariableObject, _JSObjectExpressionProcessor;
 
@@ -3701,6 +3704,73 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
   })();
 
   ttm.lib.math.Precise = ttm.class_mixer(Precise);
+
+}).call(this);
+
+},{}],12:[function(require,module,exports){
+(function() {
+  var ResultingExpressionEquality, class_mixer, object_refinement, ttm;
+
+  ttm = thinkthroughmath;
+
+  class_mixer = ttm.class_mixer;
+
+  object_refinement = ttm.lib.object_refinement;
+
+  ResultingExpressionEquality = (function() {
+    function ResultingExpressionEquality() {}
+
+    ResultingExpressionEquality.prototype.initialize = function() {
+      return this.report_saved = false;
+    };
+
+    ResultingExpressionEquality.prototype.calculate = function(first, second) {
+      this.first = first;
+      this.second = second;
+      this._equality_results = this.first === this.second;
+      return this;
+    };
+
+    ResultingExpressionEquality.prototype.isEqual = function() {
+      return this._equality_results;
+    };
+
+    ResultingExpressionEquality.prototype.notEqualReport = function(a, b, not_eql_msg) {
+      this.a = a;
+      this.b = b;
+      this.not_eql_msg = not_eql_msg;
+      return this.report_saved = true;
+    };
+
+    ResultingExpressionEquality.prototype.saveFalseForReport = function(value, a, b, msg) {
+      if (value) {
+        return true;
+      } else {
+        if (!this.report_saved) {
+          this.notEqualReport(a, b, msg);
+        }
+        return false;
+      }
+    };
+
+    return ResultingExpressionEquality;
+
+  })();
+
+  class_mixer(ResultingExpressionEquality);
+
+  ResultingExpressionEquality.isEqual = function(a, b) {
+    return ResultingExpressionEquality.build().calculate(a, b).isEqual();
+  };
+
+  ResultingExpressionEquality.equalityCalculation = function(a, b) {
+    var ec;
+    ec = ResultingExpressionEquality.build();
+    ec.calculate(a, b);
+    return ec;
+  };
+
+  ttm.lib.math.ResultingExpressionEquality = ResultingExpressionEquality;
 
 }).call(this);
 
