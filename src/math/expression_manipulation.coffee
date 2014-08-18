@@ -166,19 +166,20 @@ class AppendDecimal extends ExpressionManipulation
   # @destructive
   doAppendD: (expression, expression_position)->
     last = expression.last()
-    if last
-      if last.isNumber()
-        last.futureAsDecimalD(true)
-      else
-        _ImplicitMultiplication.build(@comps).invokeD(expression)
-        new_last = @comps.build_number(value: 0)
-        new_last.futureAsDecimalD(true)
-        expression.appendD(new_last)
-    else
+
+    if typeof last == 'undefined'
       new_last = @comps.build_number(value: 0)
       new_last.futureAsDecimalD(true)
       expression.appendD(new_last)
 
+    else if last.isNumber()
+      last.futureAsDecimalD(true) unless last.val.match(/\./)
+
+    else
+      _ImplicitMultiplication.build(@comps).invokeD(expression)
+      new_last = @comps.build_number(value: 0)
+      new_last.futureAsDecimalD(true)
+      expression.appendD(new_last)
 
   perform: (expression_position)->
     result_exp = @M(expression_position).clone().

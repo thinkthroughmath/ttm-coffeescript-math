@@ -29,7 +29,6 @@ it_inserts_components_where_pointed_to = (specifics)->
        specifics.basic_should_equal_after.call(@)
       )
 
-
 describe "expression manipulations", ->
   beforeEach ->
     @math = ttm.lib.math.math_lib.build()
@@ -90,7 +89,6 @@ describe "expression manipulations", ->
       new_exp = @manip.build_append_multiplication().perform(exp_pos)
       expected = @exp_builder({'^': [1, 2]}, '*')
       expect(new_exp.expression()).toBeAnEqualExpressionTo expected
-
 
   describe "exponentiate last element", ->
     it_plays_manipulation_role
@@ -173,7 +171,6 @@ describe "expression manipulations", ->
               comp.parent().parent()
           )
 
-
         exp = @manip.build_append_number(value: 8).
           perform(@exp_pos)
 
@@ -207,7 +204,6 @@ describe "expression manipulations", ->
         manipulated_exp = @manip.build_append_number(value: 8).perform(exp_pos)
         expected = @exp_builder(1, '+', 3, '=', 8)
         expect(manipulated_exp.expression()).toBeAnEqualExpressionTo expected
-
 
   describe "appending an equals", ->
     it "inserts an equals sign into the equation", ->
@@ -294,7 +290,6 @@ describe "expression manipulations", ->
       new_exp = @manip.build_append_division().perform(exp)
       expect(new_exp.expression().last() instanceof @components.classes.division).toBeTruthy()
 
-
     it_inserts_components_where_pointed_to(
       name: 'division'
       subject: -> @manip.build_append_division()
@@ -336,7 +331,6 @@ describe "expression manipulations", ->
       basic_should_equal_after: -> @exp_builder 1, '-'
     )
 
-
     it "adds subtraction to the end of the expression", ->
       exp = @exp_pos_builder(1)
       new_exp = @manip.build_append_subtraction().perform(exp)
@@ -348,7 +342,6 @@ describe "expression manipulations", ->
         @manip.build_append_decimal(value: 5)
       expression_for_performance: ->
         @exp_pos_builder(10)
-
 
     it_inserts_components_where_pointed_to(
       name: 'append decimal'
@@ -369,6 +362,15 @@ describe "expression manipulations", ->
       exp = @manip.build_append_decimal().perform(exp)
       exp = @manip.build_append_number(value: 1).perform(exp)
       @expect_value(exp, '1.1')
+
+    it "adds only one decimal to the value", ->
+      exp = @exp_pos_builder()
+      exp = @manip.build_append_number(value: 1).perform(exp)
+      exp = @manip.build_append_decimal().perform(exp)
+      exp = @manip.build_append_number(value: 1).perform(exp)
+      exp = @manip.build_append_decimal().perform(exp)
+      exp = @manip.build_append_number(value: 1).perform(exp)
+      @expect_value(exp, '1.11')
 
   describe "square expression", ->
     it_plays_manipulation_role
@@ -437,7 +439,6 @@ describe "expression manipulations", ->
       expression_for_performance: ->
         @exp_pos_builder()
 
-
   describe "negate last", ->
     it_plays_manipulation_role
       subject: ->
@@ -474,9 +475,6 @@ describe "expression manipulations", ->
       new_exp = @manip.build_append_pi(value: "1").perform(exp).expression()
       expect(new_exp.last()).toBeInstanceOf @components.classes.pi
       expect(new_exp.last().value()).toEqual "1"
-
-
-
 
   describe "appending a fraction", ->
     it_plays_manipulation_role
@@ -532,7 +530,6 @@ describe "expression manipulations", ->
       new_exp = @manip.build_square_root().perform(exp)
       expect(new_exp.expression().last().value()).toEqual '2'
 
-
   describe "substituting variables", ->
     it_plays_manipulation_role
       subject: ->
@@ -586,7 +583,6 @@ describe "expression manipulations", ->
       expected = @exp_builder({variable: "funky"}, '=')
       expect(new_exp.expression()).toBeAnEqualExpressionTo(expected)
 
-
   describe "utilities", ->
     describe "updating which element is pointed at", ->
       it "changes the place something is pointed at", ->
@@ -599,6 +595,3 @@ describe "expression manipulations", ->
           exp.isExpression() && exp.parent() && exp.parent().isFraction()
         expect(new_exp.position()).not.toEqual(orig_pointed)
         expect(new_exp.position()).toEqual(new_exp.expression().last().numerator().id())
-
-
-

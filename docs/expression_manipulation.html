@@ -399,19 +399,20 @@ class_mixer(Square)
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">doAppendD</span>: <span class="hljs-function"><span class="hljs-params">(expression, expression_position)</span>-&gt;</span>
     last = expression.last()
-    <span class="hljs-keyword">if</span> last
-      <span class="hljs-keyword">if</span> last.isNumber()
-        last.futureAsDecimalD(<span class="hljs-literal">true</span>)
-      <span class="hljs-keyword">else</span>
-        _ImplicitMultiplication.build(<span class="hljs-property">@comps</span>).invokeD(expression)
-        new_last = <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">0</span>)
-        new_last.futureAsDecimalD(<span class="hljs-literal">true</span>)
-        expression.appendD(new_last)
-    <span class="hljs-keyword">else</span>
+
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">typeof</span> last == <span class="hljs-string">'undefined'</span>
       new_last = <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">0</span>)
       new_last.futureAsDecimalD(<span class="hljs-literal">true</span>)
       expression.appendD(new_last)
 
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> last.isNumber()
+      last.futureAsDecimalD(<span class="hljs-literal">true</span>) <span class="hljs-keyword">unless</span> last.val.match(<span class="hljs-regexp">/\./</span>)
+
+    <span class="hljs-keyword">else</span>
+      _ImplicitMultiplication.build(<span class="hljs-property">@comps</span>).invokeD(expression)
+      new_last = <span class="hljs-property">@comps</span>.build_number(<span class="hljs-attribute">value</span>: <span class="hljs-number">0</span>)
+      new_last.futureAsDecimalD(<span class="hljs-literal">true</span>)
+      expression.appendD(new_last)
 
   <span class="hljs-attribute">perform</span>: <span class="hljs-function"><span class="hljs-params">(expression_position)</span>-&gt;</span>
     result_exp = <span class="hljs-property">@M</span>(expression_position).clone().
