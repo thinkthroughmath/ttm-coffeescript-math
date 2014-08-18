@@ -181,12 +181,8 @@ module.exports = function (grunt) {
         ],
         dest: '<%= yeoman.out %>/specs.js'
       }
-    },
-
+    }
   });
-
-
-
 
   grunt.registerTask('serve', [
     'build',
@@ -211,6 +207,4 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('default', ['build']);
-
-
 };
