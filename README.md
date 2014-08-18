@@ -9,9 +9,10 @@
 
     grunt serve
 
-
 ### To run tests
 
     grunt test
 
+### To build as package to commit as a release
 
+    grunt build
