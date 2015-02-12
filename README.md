@@ -5,6 +5,8 @@
 
     npm install
 
+    bower install
+
 ### To serve library in a browser
 
     grunt serve
