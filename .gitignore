@@ -3,3 +3,4 @@ node_modules
 out
 .sass-cache
 bower_components
+tests
