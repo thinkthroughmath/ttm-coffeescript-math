@@ -545,7 +545,7 @@ class SquareRoot extends ExpressionManipulation
         @comps.build_expression expression: [@comps.build_number(value: "#{root}")]
       else
         expr = expr.clone(is_error: true)
-    @pos.build(expression: new_exp, position: expr.id())
+    @pos.build(expression: new_exp, position: new_exp.id())
 
 
 class_mixer(SquareRoot)

@@ -28,6 +28,11 @@ describe "regression tests / bugs: ", ->
         '904.32'
       )
 
+    it "a root operation followed by another operation succeeds", ->
+      @expect_evaluation [{'root':[2,64]}, '+', 1], 9
+      @expect_evaluation [{'root':[2,64]}, '-', 1], 7
+      @expect_evaluation [{'root':[2,64]}, '/', 2], 4
+      @expect_evaluation [{'root':[2,64]}, '*', 2], 16
 
     it "returns an isError() expression when expression contains an incomplete subexpression", ->
 

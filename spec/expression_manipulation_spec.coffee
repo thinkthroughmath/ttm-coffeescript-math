@@ -399,6 +399,21 @@ describe "expression manipulations", ->
       expect(new_exp.last()).toBeInstanceOf @components.classes.root
       expect(new_exp.last(1)).toBeInstanceOf @components.classes.multiplication
 
+    it "adds root and an addition to the expression", ->
+      exp = @exp_pos_builder()
+      exp = @manip.build_append_number(value: 8).perform(exp)
+      exp = @manip.build_append_number(value: 1).perform(exp)
+      exp = @manip.build_square_root().perform(exp)
+      exp = @manip.build_append_addition().perform(exp)
+      exp = @manip.build_append_sub_expression().perform(exp)
+      exp = @manip.build_append_number(value: 2).perform(exp)
+      exp = @manip.build_append_addition().perform(exp)
+      exp = @manip.build_append_number(value: 4).perform(exp)
+      exp = @manip.build_exit_sub_expression().perform(exp)
+
+      expected = @exp_builder(9, '+', [2, '+', 4])
+      expect(exp.expression()).toBeAnEqualExpressionTo expected
+
   describe "appending variable", ->
     it_plays_manipulation_role
       subject: ->

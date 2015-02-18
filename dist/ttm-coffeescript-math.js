@@ -2944,7 +2944,7 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
       });
       return this.pos.build({
         expression: new_exp,
-        position: expr.id()
+        position: new_exp.id()
       });
     };
 
