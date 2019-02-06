@@ -2587,6 +2587,9 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
       var expr, result_exp,
         _this = this;
       expr = expression_position.expression();
+      if (expr.isEmpty()) {
+        return expression_position;
+      }
       result_exp = this.M(expression_position).clone().withComponent(expression_position, function(component) {
         return _this.withoutTrailingOperatorD(component).appendD(_this.comps.build_subtraction());
       }).value();

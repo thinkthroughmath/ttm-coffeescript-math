@@ -367,6 +367,7 @@ class_mixer(AppendAddition)
 class AppendSubtraction extends ExpressionManipulation
   perform: (expression_position)->
     expr = expression_position.expression()
+    return expression_position if expr.isEmpty()
 
     result_exp = @M(expression_position).clone().
       withComponent(expression_position, (component)=>
