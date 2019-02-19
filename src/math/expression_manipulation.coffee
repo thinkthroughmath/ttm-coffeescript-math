@@ -198,7 +198,7 @@ class AppendNumber extends ExpressionManipulation
   # @destructive
   doAppendD: (append_to, expression_position)->
     number_to_append = @comps.build_number(value: @val)
-    last = append_to.last()
+    last = if append_to.last? then append_to.last()
     if last
       if last instanceof @comps.classes.number
         append_to.last().concatenateD(@val)
@@ -367,6 +367,7 @@ class_mixer(AppendAddition)
 class AppendSubtraction extends ExpressionManipulation
   perform: (expression_position)->
     expr = expression_position.expression()
+    return expression_position if expr.isEmpty()
 
     result_exp = @M(expression_position).clone().
       withComponent(expression_position, (component)=>
