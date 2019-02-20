@@ -198,7 +198,7 @@ class AppendNumber extends ExpressionManipulation
   # @destructive
   doAppendD: (append_to, expression_position)->
     number_to_append = @comps.build_number(value: @val)
-    last = if append_to.last? then append_to.last()
+    last = if (append_to? && append_to.last?) then append_to.last()
     if last
       if last instanceof @comps.classes.number
         append_to.last().concatenateD(@val)
