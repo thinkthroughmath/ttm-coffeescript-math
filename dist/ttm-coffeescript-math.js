@@ -2303,7 +2303,7 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
       number_to_append = this.comps.build_number({
         value: this.val
       });
-      last = append_to.last != null ? append_to.last() : void 0;
+      last = (append_to != null) && (append_to.last != null) ? append_to.last() : void 0;
       if (last) {
         if (last instanceof this.comps.classes.number) {
           return append_to.last().concatenateD(this.val);
