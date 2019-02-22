@@ -165,7 +165,7 @@ class_mixer(Square)
 class AppendDecimal extends ExpressionManipulation
   # @destructive
   doAppendD: (expression, expression_position)->
-    last = if expression.last? then expression.last()
+    last = if ( expression? && expression.last? ) then expression.last()
 
     if typeof last == 'undefined'
       new_last = @comps.build_number(value: 0)

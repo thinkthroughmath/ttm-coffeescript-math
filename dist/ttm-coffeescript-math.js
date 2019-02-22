@@ -2246,7 +2246,7 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
 
     AppendDecimal.prototype.doAppendD = function(expression, expression_position) {
       var last, new_last;
-      last = expression.last != null ? expression.last() : void 0;
+      last = (expression != null) && (expression.last != null) ? expression.last() : void 0;
       if (typeof last === 'undefined') {
         new_last = this.comps.build_number({
           value: 0
