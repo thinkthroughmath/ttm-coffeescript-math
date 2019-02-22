@@ -170,7 +170,7 @@ class AppendDecimal extends ExpressionManipulation
     if typeof last == 'undefined'
       new_last = @comps.build_number(value: 0)
       new_last.futureAsDecimalD(true)
-      expression.appendD(new_last)
+      if expression? then expression.appendD(new_last)
 
     else if last.isNumber()
       last.futureAsDecimalD(true) unless last.val.match(/\./)

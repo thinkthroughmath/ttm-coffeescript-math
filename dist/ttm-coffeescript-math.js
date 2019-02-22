@@ -2252,7 +2252,9 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
           value: 0
         });
         new_last.futureAsDecimalD(true);
-        return expression.appendD(new_last);
+        if (expression != null) {
+          return expression.appendD(new_last);
+        }
       } else if (last.isNumber()) {
         if (!last.val.match(/\./)) {
           return last.futureAsDecimalD(true);
