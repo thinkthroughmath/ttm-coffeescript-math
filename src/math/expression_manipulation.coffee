@@ -208,7 +208,7 @@ class AppendNumber extends ExpressionManipulation
       else
         append_to.appendD(number_to_append)
     else
-      append_to.appendD(number_to_append)
+      if append_to? then append_to.appendD(number_to_append)
 
   perform: (expression_position)->
     result_exp = @M(expression_position).clone().

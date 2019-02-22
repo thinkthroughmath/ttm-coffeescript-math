@@ -2314,7 +2314,9 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
           return append_to.appendD(number_to_append);
         }
       } else {
-        return append_to.appendD(number_to_append);
+        if (append_to != null) {
+          return append_to.appendD(number_to_append);
+        }
       }
     };
 
