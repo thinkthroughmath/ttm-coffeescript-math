@@ -2316,7 +2316,7 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
           return append_to.appendD(number_to_append);
         }
       } else {
-        if (append_to != null) {
+        if ((append_to != null) && (append_to.appendD != null)) {
           return append_to.appendD(number_to_append);
         }
       }
