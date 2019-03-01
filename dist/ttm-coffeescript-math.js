@@ -2246,13 +2246,15 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
 
     AppendDecimal.prototype.doAppendD = function(expression, expression_position) {
       var last, new_last;
-      last = expression.last != null ? expression.last() : void 0;
+      last = (expression != null) && (expression.last != null) ? expression.last() : void 0;
       if (typeof last === 'undefined') {
         new_last = this.comps.build_number({
           value: 0
         });
         new_last.futureAsDecimalD(true);
-        return expression.appendD(new_last);
+        if (expression != null) {
+          return expression.appendD(new_last);
+        }
       } else if (last.isNumber()) {
         if (!last.val.match(/\./)) {
           return last.futureAsDecimalD(true);
@@ -2303,18 +2305,25 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
       number_to_append = this.comps.build_number({
         value: this.val
       });
-      last = append_to.last != null ? append_to.last() : void 0;
+      console.log("entry part --->" + append_to);
+      last = (append_to != null) && (append_to.last != null) ? append_to.last() : void 0;
       if (last) {
         if (last instanceof this.comps.classes.number) {
+          console.log("if 1 -->" + this.val);
           return append_to.last().concatenateD(this.val);
         } else if ((last instanceof this.comps.classes.exponentiation) || !this.isOperator(last)) {
+          console.log("if 2 -->" + this.comps.build_multiplication() + number_to_append);
           append_to.appendD(this.comps.build_multiplication());
           return append_to.appendD(number_to_append);
         } else {
+          console.log("if else -->" + number_to_append);
           return append_to.appendD(number_to_append);
         }
       } else {
-        return append_to.appendD(number_to_append);
+        console.log("else part --->" + append_to);
+        if ((append_to != null) && (append_to.appendD != null)) {
+          return append_to.appendD(number_to_append);
+        }
       }
     };
 

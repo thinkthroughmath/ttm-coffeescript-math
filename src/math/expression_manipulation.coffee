@@ -165,12 +165,12 @@ class_mixer(Square)
 class AppendDecimal extends ExpressionManipulation
   # @destructive
   doAppendD: (expression, expression_position)->
-    last = if expression.last? then expression.last()
+    last = if ( expression? && expression.last? ) then expression.last()
 
     if typeof last == 'undefined'
       new_last = @comps.build_number(value: 0)
       new_last.futureAsDecimalD(true)
-      expression.appendD(new_last)
+      if expression? then expression.appendD(new_last)
 
     else if last.isNumber()
       last.futureAsDecimalD(true) unless last.val.match(/\./)
@@ -198,17 +198,22 @@ class AppendNumber extends ExpressionManipulation
   # @destructive
   doAppendD: (append_to, expression_position)->
     number_to_append = @comps.build_number(value: @val)
-    last = if append_to.last? then append_to.last()
+    console.log "entry part --->" + append_to
+    last = if ( append_to? && append_to.last? ) then append_to.last()
     if last
       if last instanceof @comps.classes.number
+        console.log "if 1 -->" + @val
         append_to.last().concatenateD(@val)
       else if (last instanceof @comps.classes.exponentiation) or !@isOperator(last)
+        console.log "if 2 -->" + @comps.build_multiplication() + number_to_append
         append_to.appendD(@comps.build_multiplication())
         append_to.appendD(number_to_append)
       else
+        console.log "if else -->" + number_to_append
         append_to.appendD(number_to_append)
     else
-      append_to.appendD(number_to_append)
+      console.log "else part --->" + append_to
+      if append_to? && append_to.appendD? then append_to.appendD(number_to_append)
 
   perform: (expression_position)->
     result_exp = @M(expression_position).clone().
