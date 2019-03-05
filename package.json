@@ -1,6 +1,6 @@
 {
   "name": "ttm-coffeescript-math",
-  "version": "0.3.3",
+  "version": "0.3.5",
   "description": "TTM CoffeeScript Math",
   "homepage": "https://github.com/thinkthroughmath/ttm-coffeescript-math",
   "dependencies": {

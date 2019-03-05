@@ -165,12 +165,12 @@ class_mixer(Square)
 class AppendDecimal extends ExpressionManipulation
   # @destructive
   doAppendD: (expression, expression_position)->
-    last = if expression.last? then expression.last()
+    last = if ( expression? && expression.last? ) then expression.last()
 
     if typeof last == 'undefined'
       new_last = @comps.build_number(value: 0)
       new_last.futureAsDecimalD(true)
-      expression.appendD(new_last)
+      if expression? then expression.appendD(new_last)
 
     else if last.isNumber()
       last.futureAsDecimalD(true) unless last.val.match(/\./)
@@ -198,7 +198,7 @@ class AppendNumber extends ExpressionManipulation
   # @destructive
   doAppendD: (append_to, expression_position)->
     number_to_append = @comps.build_number(value: @val)
-    last = if append_to.last? then append_to.last()
+    last = if ( append_to? && append_to.last? ) then append_to.last()
     if last
       if last instanceof @comps.classes.number
         append_to.last().concatenateD(@val)
@@ -208,7 +208,7 @@ class AppendNumber extends ExpressionManipulation
       else
         append_to.appendD(number_to_append)
     else
-      append_to.appendD(number_to_append)
+      if append_to? && append_to.appendD? then append_to.appendD(number_to_append)
 
   perform: (expression_position)->
     result_exp = @M(expression_position).clone().
