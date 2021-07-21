@@ -372,6 +372,26 @@ describe "expression manipulations", ->
       exp = @manip.build_append_number(value: 1).perform(exp)
       @expect_value(exp, '1.11')
 
+  describe 'calculate expression', ->
+    it_plays_manipulation_role
+      subject: ->
+        @manip.build_calculate()
+      expression_for_performance: ->
+        @exp_pos_builder(5)
+
+    describe '.perform()', ->
+      beforeEach ->
+        @exp = @exp_pos_builder(5)
+        @exp =  @manip.build_append_division().perform(@exp)
+        @new_exp = @manip.build_calculate().perform(@exp)
+
+      it 'sets error state in Expression object and nothing else', ->
+        @exp.expr.is_error = true
+        expect(@new_exp.expr).toBeAnEqualExpressionTo @exp.expr
+
+      it 'retains the position value', ->
+        expect(@new_exp.position).toEqual @exp.position
+
   describe "square expression", ->
     it_plays_manipulation_role
       subject: ->
