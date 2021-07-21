@@ -2190,8 +2190,10 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
     Calculate.prototype.perform = function(expression_position) {
       var results;
       results = this.evaluate(expression_position.expression());
-      expression_position.expr.is_error = results.is_error;
-      return expression_position;
+      results.id_value = expression_position.expression().id();
+      return expression_position.clone({
+        expression: results
+      });
     };
 
     return Calculate;

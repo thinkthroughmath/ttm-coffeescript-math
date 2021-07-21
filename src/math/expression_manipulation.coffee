@@ -149,8 +149,8 @@ class_mixer(ExpressionPositionManipulator)
 class Calculate extends ExpressionManipulation
   perform: (expression_position)->
     results = @evaluate(expression_position.expression())
-    expression_position.expr.is_error = results.is_error
-    expression_position
+    results.id_value = expression_position.expression().id()
+    expression_position.clone(expression: results)
 
 class_mixer(Calculate)
 

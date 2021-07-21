@@ -381,16 +381,32 @@ describe "expression manipulations", ->
 
     describe '.perform()', ->
       beforeEach ->
-        @exp = @exp_pos_builder(5)
-        @exp =  @manip.build_append_division().perform(@exp)
+        @exp = @exp_pos_builder(6)
+        @exp = @manip.build_append_division().perform(@exp)
+        @exp = @manip.build_append_number(value: 2).perform(@exp)
         @new_exp = @manip.build_calculate().perform(@exp)
 
-      it 'sets error state in Expression object and nothing else', ->
-        @exp.expr.is_error = true
-        expect(@new_exp.expr).toBeAnEqualExpressionTo @exp.expr
+      it 'collapses Expression array', ->
+        collapsed_exp = @exp_pos_builder(3)
+
+        expect(@new_exp.expression()).toBeAnEqualExpressionTo collapsed_exp.expression()
 
       it 'retains the position value', ->
-        expect(@new_exp.position).toEqual @exp.position
+        expect(@new_exp.position()).toEqual @exp.position()
+
+      it 'retains id of cloned Expression object', ->
+        expect(@new_exp.expression().id()).toEqual @exp.expression().id()
+
+      describe 'with error state', ->
+        beforeEach ->
+          @exp = @manip.build_append_division().perform(@new_exp)
+          @new_exp = @manip.build_calculate().perform(@exp)
+
+        it 'sets error state and clears array in Expression object', ->
+          error_exp = @exp_pos_builder()
+          error_exp.expr.is_error = true
+
+          expect(@new_exp.expr).toBeAnEqualExpressionTo error_exp.expression()
 
   describe "square expression", ->
     it_plays_manipulation_role
