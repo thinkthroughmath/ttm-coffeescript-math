@@ -104,7 +104,7 @@ describe "Expression Components", ->
       new_root = @root.clone()
       new_root.doot = 10
 
-      expect(@root).toBeAnEqualExpressionTo(new_root)
+      expect(@root).toBeAnEqualExpressionTo new_root
       expect(@root.doot).not.toBeAnEqualExpressionTo new_root.doot
 
   describe "division", ->
