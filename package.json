@@ -1,6 +1,6 @@
 {
   "name": "ttm-coffeescript-math",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "TTM CoffeeScript Math",
   "homepage": "https://github.com/thinkthroughmath/ttm-coffeescript-math",
   "dependencies": {
@@ -8,8 +8,8 @@
     "jquery": "~1.8.3"
   },
   "author": {
-    "name": "Think Through Math, Joel McCracken",
-    "email": "mccracken.joel@gmail.com",
+    "name": "Imagine Learning, Joel McCracken",
+    "email": "MathDaemons@imaginelearning.com",
     "url": "https://github.com/thinkthroughmath"
   },
   "devDependencies": {
@@ -18,7 +18,7 @@
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-uglify": "~0.2.4",
     "grunt-contrib-jshint": "~0.6.3",
-    "grunt-contrib-connect": "~0.5.0",
+    "grunt-contrib-connect": "~1.0",
     "grunt-bower-install": "~0.5.0",
     "grunt-contrib-watch": "~0.5.2",
     "grunt-contrib-coffee": "~0.7.0",
@@ -29,13 +29,13 @@
     "grunt-concurrent": "~0.3.0",
     "load-grunt-tasks": "~0.1.0",
     "time-grunt": "~0.1.1",
-    "grunt-contrib-jasmine": "~0.5.1",
+    "grunt-contrib-jasmine": "~1.2",
     "browserify": "~2.35.0",
     "grunt-browserify": "~1.2.9",
     "grunt-contrib-jst": "~0.5.1",
-    "grunt-sass": "~0.7.0",
-    "grunt-docco": "~0.3.2",
-    "docco": "~0.6.2"
+    "grunt-sass": "~1.0",
+    "grunt-docco": "~0.5.0",
+    "docco": "~0.8.1"
   },
   "engines": {
     "node": ">=0.8.0"

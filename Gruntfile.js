@@ -88,7 +88,7 @@ module.exports = function (grunt) {
         files: [{
           dot: true,
           src: [
-            '<%= yeoman.docs %>',
+            // '<%= yeoman.docs %>',
             '<%= yeoman.out %>',
             '<%= yeoman.dist %>'
           ]
@@ -102,8 +102,7 @@ module.exports = function (grunt) {
           '<%= yeoman.bower %>/ttm-coffeescript-utilities/dist/ttm-coffeescript-utilities.js',
           '<%= yeoman.dist %>/<%= pkg.name %>.js',
           '<%= yeoman.out %>/spec/spec_helpers.js',
-          '<%= yeoman.out %>/spec/**/*.js',
-          '<%= yeoman.out %>/spec/build_expression_from_javascript_object_spec.js',
+          '<%= yeoman.out %>/spec/**/*_spec.js',
         ]
       },
       ci:{
@@ -162,15 +161,17 @@ module.exports = function (grunt) {
     },
 
 
-    docco: {
-      docs: {
-        src: ['src/**/*.coffee',
-              'spec/**/*.coffee'],
-        options: {
-          output: 'docs/'
-        }
-      }
-    },
+    // This is failing to work, and it only really creates some "docs" that are just the spec file contents in an HTML page
+    // It blocks building AND testing, so commenting it out for now
+    // docco: {
+    //   docs: {
+    //     src: ['src/**/*.coffee',
+    //           'spec/**/*.coffee'],
+    //     options: {
+    //       output: 'docs/'
+    //     }
+    //   }
+    // },
 
     uglify: {
       dist: {
@@ -202,7 +203,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean',
-    'docco',
+    // 'docco',
     'coffee',
     'copy:out',
     'copy:spec',
