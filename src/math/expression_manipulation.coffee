@@ -81,7 +81,7 @@ class _ExpressionManipulator
   withComponent: (position, fn)->
     comp = @traversal.build(@expr).
       findForID(position.position())
-    fn(comp)
+    fn(comp) if comp
     @
   value: -> @expr
 
