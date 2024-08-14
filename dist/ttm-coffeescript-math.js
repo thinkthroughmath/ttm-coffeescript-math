@@ -2065,7 +2065,9 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
     _ExpressionManipulator.prototype.withComponent = function(position, fn) {
       var comp;
       comp = this.traversal.build(this.expr).findForID(position.position());
-      fn(comp);
+      if (comp) {
+        fn(comp);
+      }
       return this;
     };
 
